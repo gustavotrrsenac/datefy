@@ -1,0 +1,34 @@
+  <!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar Senha - DateFY</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="logo">Date<span>FY</span></h1>
+      <form method="POST" action="{{ url_for('recuperar_senha') }}">
+        <label for="email">Digite seu e-mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Seu e-mail cadastrado"
+          required
+        />
+
+        <button type="submit">Enviar Link de Recuperação</button>
+      </form>
+
+      <div class="footer">
+        <a href="{{ url_for('login') }}">Voltar ao Login</a>
+      </div>
+    </div>
+  </body>
+</html>

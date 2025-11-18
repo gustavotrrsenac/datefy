@@ -1,0 +1,99 @@
+/* === ESTILO GLOBAL === */
+body {
+  background-color: #1b3c53;
+  font-family: "Poppins", sans-serif;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* === CONTAINER PRINCIPAL === */
+.container {
+  background-color: #234c6a;
+  padding: 40px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+/* === LOGO === */
+.logo {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.logo span {
+  color: #00aeef;
+}
+
+/* === FORMULÁRIO === */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+label {
+  text-align: left;
+  font-size: 0.9rem;
+  color: #dbe9f1;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #1b3c53;
+  color: white;
+  font-size: 1rem;
+}
+
+input::placeholder {
+  color: #9bb7c9;
+}
+
+/* === BOTÃO === */
+button {
+  background-color: white;
+  color: #1b3c53;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #00aeef;
+  color: white;
+}
+
+/* === LINKS === */
+a {
+  color: #9bb7c9;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* === TEXTO INFERIOR === */
+.footer {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: #d0e2ef;
+}
+
+.footer a {
+  color: #d2c1b6;
+  font-weight: bold;
+}

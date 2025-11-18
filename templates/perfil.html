@@ -1,0 +1,25 @@
+ <!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - DateFY</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="logo">Date<span>FY</span></h1>
+      <h2>Meu Perfil</h2>
+      <p>Aqui você poderá editar suas informações pessoais futuramente.</p>
+
+      <div class="footer">
+        <a href="{{ url_for('dashboard') }}">⬅ Voltar ao Dashboard</a> |
+        <a href="{{ url_for('logout') }}">Sair</a>
+      </div>
+    </div>
+  </body>
+</html>
