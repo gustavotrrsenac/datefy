@@ -137,8 +137,8 @@ body.tela-interna { display:flex; min-height:100vh; }
 
 /* ================= FINANÇAS ================= */
 .painel-info table { width:100%; border-collapse:collapse; margin-top:12px; }
-.painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color:#e6f2fb; }
-.painel-info table thead th { color:#cbd8e4; }
+.painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color:#000; }
+.painel-info table thead th { color:#000; }
 
 /* responsive */
 @media(max-width:900px) {
