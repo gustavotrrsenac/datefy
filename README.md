@@ -106,4 +106,3 @@ As cores oficiais da marca Datefy são [1]:
 | Azul Claro/Cinzento | `#456882` |
 | Bege/Off-White | `#D2C1B6` |
 
-## Referências
