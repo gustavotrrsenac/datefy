@@ -1,0 +1,9 @@
+<h1>Editar Perfil</h1>
+<form method="POST">
+  <label>Nome:</label>
+  <input type="text" name="nome" value="{{ usuario.nome }}"><br>
+  <label>Email:</label>
+  <input type="email" name="email" value="{{ usuario.email }}"><br>
+  <button type="submit">Salvar</button>
+</form>
+<a href="{{ url_for('perfil') }}">Voltar ao Perfil</a>

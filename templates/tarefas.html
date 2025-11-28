@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Adicionar Tarefa - DateFY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="tela-interna">
+  <aside class="sidebar">
+    <h2 class="logo">Date<span>FY</span></h2>
+    <ul>
+      <li><a href="{{ url_for('dashboard') }}"> Visão Geral</a></li>
+      <li><a href="{{ url_for('vida_pessoal') }}"> Vida Pessoal</a></li>
+      <li><a href="{{ url_for('financas') }}"> Finanças</a></li>
+      <li><a href="{{ url_for('logout') }}"> Sair</a></li>
+    </ul>
+  </aside>
+
+  <main class="conteudo-principal">
+    <h1 class="titulo-pagina">➕ Adicionar Tarefa</h1>
+
+    <form action="{{ url_for('salvar_tarefa') }}" method="POST" class="form-box">
+      <label>Título</label>
+      <input name="titulo" required placeholder="Ex: Estudar para a prova">
+
+      <label>Descrição</label>
+      <textarea name="descricao" rows="3" placeholder="Detalhes..."></textarea>
+
+      <label>Data</label>
+      <input name="data" type="date" required>
+
+      <label>Categoria</label>
+      <select name="categoria">
+        <option value="Estudos"> Estudos</option>
+        <option value="Saúde"> Saúde</option>
+        <option value="Casa"> Casa</option>
+        <option value="Lazer"> Lazer</option>
+        <option value="Trabalho"> Trabalho</option>
+      </select>
+
+      <button type="submit" class="btn-padrao">Salvar Tarefa</button>
+    </form>
+  </main>
+</body>
+</html>

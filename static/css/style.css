@@ -1,99 +1,280 @@
-/* === ESTILO GLOBAL === */
+/* ================= GLOBAL ================= */
 body {
-  background-color: #1b3c53;
+  background-color: #1B3C53;
   font-family: "Poppins", sans-serif;
   color: white;
+  margin: 0;
+}
+
+/* centralizar apenas em páginas de login/criar-conta */
+body.center-page {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  margin: 0;
 }
 
-/* === CONTAINER PRINCIPAL === */
+/* ================= LOGIN / CADASTRO ================= */
 .container {
   background-color: #234c6a;
   padding: 40px;
   border-radius: 15px;
   width: 350px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
   text-align: center;
 }
 
-/* === LOGO === */
 .logo {
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
+.logo span { color: #00AEFF; }
 
-.logo span {
-  color: #00aeef;
-}
-
-/* === FORMULÁRIO === */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-label {
-  text-align: left;
-  font-size: 0.9rem;
-  color: #dbe9f1;
-}
-
-input {
+form { display: flex; flex-direction: column; gap: 16px; }
+label { text-align: left; font-size: 0.9rem; color: #dbe9f1; }
+input, textarea, select {
   padding: 10px;
   border-radius: 8px;
   border: none;
-  outline: none;
-  background-color: #1b3c53;
+  background-color: #1B3C53;
   color: white;
   font-size: 1rem;
 }
+input::placeholder { color: #9bb7c9; }
 
-input::placeholder {
-  color: #9bb7c9;
-}
-
-/* === BOTÃO === */
 button {
   background-color: white;
-  color: #1b3c53;
-  font-weight: bold;
+  color: #1B3C53;
+  font-weight: 700;
   border: none;
   border-radius: 8px;
   padding: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+}
+button:hover { background-color: #00AEFF; color: white; }
+
+/* footer links small */
+.footer { margin-top: 12px; font-size: 0.9rem; color: #d0e2ef; }
+.footer a { color: #00AEFF; font-weight: 700; text-decoration: none; }
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background-color: #132d42;
+  padding: 24px;
+  box-shadow: 4px 0 14px rgba(0,0,0,0.3);
+}
+.sidebar .logo { margin: 0 0 18px 0; font-size: 1.6rem; text-align: left; }
+.sidebar ul { list-style: none; padding: 0; margin: 0; }
+.sidebar ul li { margin: 12px 0; }
+.sidebar ul li a {
+  color: white; text-decoration: none; display:block; padding:10px; border-radius:8px; font-weight:600;
+}
+.sidebar ul li a.active, .sidebar ul li a:hover { background:#00AEFF; color:#0C2332; }
+
+/* layout main content */
+main {
+  margin-left: 270px;
+  padding: 28px;
 }
 
-button:hover {
+/* ================= DASHBOARD CARDS ================= */
+.cards-dashboard {
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  align-items:stretch;
+}
+.card-box {
+  background:#234C6A;
+  padding:16px;
+  border-radius:12px;
+  width:220px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);
+  color:white;
+  text-align:center;
+}
+.card-box p { font-size:20px; margin:6px 0 0 0; font-weight:700; }
+.card-box.entrada { border-left:6px solid #4CAF50; }
+.card-box.saida { border-left:6px solid #FF5722; }
+.card-box.total { border-left:6px solid #00AEFF; }
+
+/* painel-info - reutilizável para áreas */
+.painel-info {
+  background:#234C6A;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* ================= TAREFAS ================= */
+.lista-tarefas { list-style:none; padding:0; margin-top:16px; max-width:800px; }
+.lista-tarefas .tarefa {
+  background:#234C6A; padding:12px 14px; border-radius:10px; margin-bottom:12px;
+  display:flex; justify-content:space-between; align-items:center; border-left:6px solid #00AEFF;
+}
+.lista-tarefas .tarefa.concluida { opacity:0.6; text-decoration:line-through; border-left-color:#4CAF50; }
+.lista-tarefas .categoria { color:#00AEFF; font-weight:700; }
+.btn-ok, .btn-voltar { padding:6px 10px; border-radius:8px; text-decoration:none; color:white; }
+.btn-ok { background:#4CAF50; }
+.btn-voltar { background:#FF9800; }
+
+/* ================= FORM ADD TAREFA (telas internas) ================= */
+body.tela-interna { display:flex; min-height:100vh; }
+.conteudo-principal { flex:1; padding:36px; }
+.form-box { background:#234C6A; padding:20px; border-radius:12px; width:100%; max-width:520px; display:flex; flex-direction:column; gap:12px; box-shadow:0 6px 18px rgba(0,0,0,0.22); }
+.form-box input, .form-box textarea, .form-box select { background:#1B3C53; border:none; color:white; padding:10px; border-radius:8px; }
+.form-box input:focus, .form-box textarea:focus, .form-box select:focus { outline:2px solid #00AEFF; }
+.btn-padrao { background:#00AEFF; color:#072634; padding:12px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
+.btn-padrao:hover { background:white; color:#072634; }
+
+/* ================= FINANÇAS ================= */
+.painel-info table { width:100%; border-collapse:collapse; margin-top:12px; }
+.painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color:#e6f2fb; }
+.painel-info table thead th { color:#cbd8e4; }
+
+/* responsive */
+@media(max-width:900px) {
+  .sidebar { width:70px; padding:14px; }
+  .sidebar .logo { display:none; }
+  main { margin-left:90px; padding:18px; }
+  .cards-dashboard { justify-content:center; }
+  .card-box { width:100%; max-width:320px; }
+}
+
+/* ===== PERFIL ===== */
+.perfil-box {
+  background-color: #234c6a;
+  color: #dbe9f1;
+  padding: 30px;
+  border-radius: 15px;
+  width: 380px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  text-align: center;
+  margin-top: 50px;
+}
+
+.foto-perfil img {
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  border: 3px solid #00aeef;
+  margin-bottom: 15px;
+}
+
+.dados-perfil p {
+  font-size: 1rem;
+  margin: 8px 0;
+}
+
+.btn-editar {
+  display: inline-block;
+  margin-top: 20px;
   background-color: #00aeef;
   color: white;
-}
-
-/* === LINKS === */
-a {
-  color: #9bb7c9;
+  padding: 10px 25px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
   text-decoration: none;
-  font-size: 0.9rem;
+  transition: 0.3s;
 }
 
-a:hover {
-  text-decoration: underline;
+.btn-editar:hover {
+  background-color: white;
+  color: #1b3c53;
 }
+  /* Fundo geral do calendário */
+  #calendar {
+    background-color: #ffffff; /* branco */
+    padding: 10px;
+    border-radius: 8px;
+  }
 
-/* === TEXTO INFERIOR === */
-.footer {
-  margin-top: 20px;
-  font-size: 0.85rem;
-  color: #d0e2ef;
-}
+  /* Cabeçalho (título do mês e botões) */
+  .fc .fc-toolbar-title {
+    color: #1e3a8a; /* azul escuro */
+    font-weight: bold;
+  }
 
-.footer a {
-  color: #d2c1b6;
+  .fc .fc-button {
+    background-color: #b38b59; /* bege */
+    border: none;
+    color: #fff;
+  }
+
+  .fc .fc-button:hover {
+    background-color: #1e3a8a; /* azul escuro ao passar o mouse */
+  }
+
+  /* Dias da semana */
+  .fc .fc-col-header-cell {
+    background-color: #f5f5dc; /* bege claro */
+    color: #1e3a8a; /* azul */
+    font-weight: bold;
+  }
+
+  /* Dias do mês */
+  .fc .fc-daygrid-day {
+    background-color: #ffffff; /* branco */
+  }
+
+  /* Eventos */
+  .fc-event {
+    background-color: #1e90ff; /* azul médio */
+    border: none;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+/* Números dos dias do calendário */
+.fc .fc-daygrid-day-number {
+  color: #1e3a8a; /* azul escuro */
   font-weight: bold;
 }
+/* Mudar cursor ao passar sobre o número da data */
+.fc .fc-daygrid-day-number {
+  cursor: pointer; /* transforma em "mãozinha" */
+  color: #1e3a8a;  /* azul escuro, se quiser manter */
+  font-weight: bold;
+}
+/* Números dos dias do calendário */
+.fc .fc-daygrid-day-number {
+  color: #000000; /* preto */
+  font-weight: bold;
+  cursor: pointer; /* mãozinha ao passar o mouse */
+  /* Quando o mouse passa por cima */
+.fc .fc-daygrid-day-number:hover {
+  color: #1e3a8a; /* azul escuro */
+  text-decoration: underline; /* opcional: sublinha o número */
+}}
+.tabela-financas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  border: 1px solid #000; /* borda preta */
+}
+
+.tabela-financas th, .tabela-financas td {
+  border: 1px solid #000; /* linhas pretas */
+  padding: 10px;
+  text-align: center;
+  color: #000; /* texto preto */
+  background-color: #fff; /* fundo branco */
+  font-weight: 600;
+}
+
+.tabela-financas th {
+  background-color: #fff; /* cabeçalho também branco */
+  color: #000; /* texto preto */
+  font-weight: bold;
+}
+

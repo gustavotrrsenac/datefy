@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vida Pessoal - DateFY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="tela-interna">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">Date<span>FY</span></h2>
+    <ul>
+      <li><a href="{{ url_for('dashboard') }}"> Visão Geral</a></li>
+      <li><a href="{{ url_for('vida_pessoal') }}" class="active"> Vida Pessoal</a></li>
+      <li><a href="{{ url_for('financas') }}"> Finanças</a></li>
+      <li><a href="{{ url_for('logout') }}"> Sair</a></li>
+    </ul>
+  </aside>
+
+  <main class="conteudo-principal">
+    <h1 class="titulo-pagina"> Vida Pessoal</h1>
+
+    <a href="{{ url_for('add_tarefa') }}" class="btn-padrao" style="margin-bottom:16px; display:inline-block;">➕ Nova Tarefa</a>
+
+    {% if tarefas %}
+    <ul class="lista-tarefas">
+      {% for t in tarefas %}
+      <li class="tarefa {% if t['status'] == 1 %}concluida{% endif %}">
+        <div>
+          <strong>{{ t['titulo'] }}</strong> — <span class="categoria">{{ t['categoria'] or 'Geral' }}</span><br>
+          <small>{{ t['data'] }}</small>
+        </div>
+        <div>
+          {% if t['status'] == 0 %}
+            <a href="{{ url_for('concluir_tarefa', id=t['id']) }}" class="btn-ok">✔️</a>
+          {% else %}
+            <a href="{{ url_for('desfazer_tarefa', id=t['id']) }}" class="btn-voltar">↩️</a>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p style="color:#cbd8e4">Nenhuma tarefa cadastrada.</p>
+    {% endif %}
+  </main>
+</body>
+</html>

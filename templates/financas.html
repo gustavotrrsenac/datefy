@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Finanças - DateFY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2 class="logo">Date<span>FY</span></h2>
+    <ul>
+      <li><a href="{{ url_for('dashboard') }}"> Visão Geral</a></li>
+      <li><a href="{{ url_for('vida_pessoal') }}"> Vida Pessoal</a></li>
+      <li><a href="{{ url_for('financas') }}" class="active"> Finanças</a></li>
+      <li><a href="{{ url_for('logout') }}"> Sair</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <h1 class="titulo-pagina">Finanças</h1>
+
+    <section class="painel-info">
+      <h3>Registrar nova transação</h3>
+      <form method="POST" class="form-financa" style="display:flex;flex-direction:column;gap:10px;max-width:720px;">
+        <input name="descricao" placeholder="Descrição (ex: Conta de luz)" />
+        <select name="categoria" required>
+          <option value="">Categoria</option>
+          {% for c in categorias %}
+            <option value="{{ c.key }}">{{ c.label }}</option>
+          {% endfor %}
+        </select>
+
+        <div style="display:flex;gap:8px;">
+          <select name="tipo" required>
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+          </select>
+
+          <input name="valor" placeholder="Valor (ex: 125.90)" />
+          <input name="data" type="date" />
+        </div>
+
+        <div style="display:flex;gap:8px;">
+          <input name="forma_pagamento" placeholder="Forma de pagamento (ex: Cartão/Boleto/Dinheiro)" />
+          <input name="parcelas" type="number" min="1" placeholder="Parcelas (opcional)" />
+        </div>
+
+        <button type="submit" class="btn-padrao">Salvar</button>
+      </form>
+    </section>
+
+    <section class="painel-info" style="margin-top:20px;">
+      <h3>Resumo</h3>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div style="background:#fff;color:#132d42;padding:14px;border-radius:10px;min-width:160px;">
+          <div>Total Entradas</div>
+          <div id="total-entradas">R$ 0.00</div>
+        </div>
+        <div style="background:#fff;color:#132d42;padding:14px;border-radius:10px;min-width:160px;">
+          <div>Total Saídas</div>
+          <div id="total-saidas">R$ 0.00</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;max-width:900px;">
+        <canvas id="chartCategorias" width="800" height="320"></canvas>
+      </div>
+    </section>
+
+    <section class="painel-info" style="margin-top:20px;">
+      <h3>Últimos lançamentos</h3>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead style="text-align:left;color:#cbd8e4;">
+          <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th></tr>
+        </thead>
+        <tbody style="color:white;">
+          {% for r in registros %}
+            <tr>
+              <td style="padding:8px 6px;">{{ r['data'] }}</td>
+              <td>{{ r['descricao'] }}</td>
+              <td>{{ r['categoria'] }}</td>
+              <td>{{ r['tipo'] }}</td>
+              <td>R$ {{ "%.2f"|format(r['valor']) }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">Nenhum registro ainda.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    async function atualizarResumo() {
+      const res = await fetch("{{ url_for('financas_data') }}");
+      const data = await res.json();
+      if(data.error) return;
+      document.getElementById("total-entradas").innerText = "R$ " + (data.totais.entrada || 0).toFixed(2);
+      document.getElementById("total-saidas").innerText = "R$ " + (data.totais.saida || 0).toFixed(2);
+
+      const ctx = document.getElementById("chartCategorias").getContext('2d');
+      if(window._chartCategorias) window._chartCategorias.destroy();
+      window._chartCategorias = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: data.por_categoria.labels,
+          datasets: [{ data: data.por_categoria.values, backgroundColor: data.por_categoria.colors }]
+        },
+        options: { responsive:false, plugins:{ legend:{ position:'bottom' } } }
+      });
+    }
+    document.addEventListener('DOMContentLoaded', atualizarResumo);
+  </script>
+</body>
+</html>
