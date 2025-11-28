@@ -82,7 +82,7 @@ O projeto Datefy está sendo desenvolvido pela seguinte equipe (Squad) [1]:
 *   BÁRBARA
 *   BRUNO
 *   DAVID
-*   EDURDO
+*   EDU
 *   LEONAN
 *   LUCAS
 *   LOHANNY
