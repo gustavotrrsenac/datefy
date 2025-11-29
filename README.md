@@ -82,7 +82,7 @@ O projeto Datefy está sendo desenvolvido pela seguinte equipe (Squad) [1]:
 *   BÁRBARA
 *   BRUNO
 *   DAVID
-*   EDURDO
+*   EDUARDO
 *   LEONAN
 *   LUCAS
 *   LOHANNY
@@ -106,4 +106,3 @@ As cores oficiais da marca Datefy são [1]:
 | Azul Claro/Cinzento | `#456882` |
 | Bege/Off-White | `#D2C1B6` |
 
-## Referências
