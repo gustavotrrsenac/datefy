@@ -101,9 +101,9 @@ main {
   text-align:center;
 }
 .card-box p { font-size:20px; margin:6px 0 0 0; font-weight:700; }
-.card-box.entrada { border-left:6px solid #4CAF50; }
-.card-box.saida { border-left:6px solid #FF5722; }
-.card-box.total { border-left:6px solid #00AEFF; }
+.card-box.entrada { border-left:6px solid #44e74a; }
+.card-box.saida { border-left:6px solid #fc5b2a; }
+.card-box.total { border-left:6px solid #99defd; }
 
 /* painel-info - reutilizável para áreas */
 .painel-info {
@@ -192,55 +192,125 @@ body.tela-interna { display:flex; min-height:100vh; }
   background-color: white;
   color: #1b3c53;
 }
-  /* Fundo geral do calendário */
-  #calendar {
-    background-color: #ffffff; /* branco */
-    padding: 10px;
-    border-radius: 8px;
-  }
+/* ============================
+       ESTILOS DO CALENDÁRIO 
+       ============================ */
 
-  /* Cabeçalho (título do mês e botões) */
-  .fc .fc-toolbar-title {
-    color: #1e3a8a; /* azul escuro */
-    font-weight: bold;
-  }
+    #calendario {
+      background: #234c6a;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 0 10px #234c6a
+    }
 
-  .fc .fc-button {
-    background-color: #b38b59; /* bege */
-    border: none;
-    color: #fff;
-  }
+    /* Título do mês */
+    .fc-toolbar-title {
+      color: #fff !important;
+      font-size: 22px;
+      font-weight: bold;
+    }
 
-  .fc .fc-button:hover {
-    background-color: #1e3a8a; /* azul escuro ao passar o mouse */
-  }
+    /* Botões de navegação */
+    .fc-button {
+      background: #1e293b !important;
+      border: none !important;
+      color: #e2e8f0 !important;
+      padding: 6px 12px !important;
+      border-radius: 8px !important;
+      font-size: 14px !important;
+    }
 
-  /* Dias da semana */
-  .fc .fc-col-header-cell {
-    background-color: #f5f5dc; /* bege claro */
-    color: #1e3a8a; /* azul */
-    font-weight: bold;
-  }
+    .fc-button:hover {
+      background: #334155 !important;
+    }
 
-  /* Dias do mês */
-  .fc .fc-daygrid-day {
-    background-color: #ffffff; /* branco */
-  }
-
-  /* Eventos */
-  .fc-event {
-    background-color: #1e90ff; /* azul médio */
-    border: none;
-    color: #fff;
-    padding: 2px 4px;
-    border-radius: 4px;
-  }
-/* Números dos dias do calendário */
-.fc .fc-daygrid-day-number {
-  color: #1e3a8a; /* azul escuro */
-  font-weight: bold;
+    /* Dias */
+    .fc-daygrid-day {
+      background: #234c6a !important;
+      border: 1px solid #0f172a !important;
+    }
+.fc-col-header-cell-cushion {
+    color: white !important;     /* cor dos nomes dos dias */
+    font-weight: 600;
 }
-/* Mudar cursor ao passar sobre o número da data */
+
+.fc-daygrid-day-number {
+    color: #234c6a !important;     /* números dos dias do mês */
+}
+
+.fc-scrollgrid-section-header td,
+.fc-scrollgrid-section-header th {
+    background-color: #1f2937 !important; /* fundo do cabeçalho no tema dark */
+}
+
+    .fc-daygrid-day:hover {
+      background: #334155 !important;
+      cursor: pointer;
+    }
+
+    /* Número do dia */
+    .fc-daygrid-day-number {
+      color: #cbd5e1 !important;
+      font-weight: bold !important;
+      font-size: 13px !important;
+    }
+
+    /* Evento dentro da célula */
+    .fc-daygrid-event {
+      background: #a1c0ce !important;
+      border: none !important;
+      color: #fff !important;
+      border-radius: 6px !important;
+      padding: 2px 4px !important;
+      font-size: 11px !important;
+      margin: 2px 0 !important;
+      font-weight: 600;
+    }
+
+    /* Caixa de eventos do dia */
+    #eventos-dia {
+      margin-top: 15px;
+      display: none;
+      background: #234c6a;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #4c5664;
+      color: #234c6a;
+    }
+
+    #eventos-dia h4 {
+      margin: 0 0 6px;
+      color: #38bdf8;
+    }
+
+    #eventos-dia li {
+      background: #0ea5e9;
+      padding: 6px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    /* Tabela de lembretes */
+    .tabela-lembretes {
+      width: 100%;
+      background: #0f172a;
+      color: #fff;
+      padding: 14px;
+      border-radius: 14px;
+    }
+
+    .tabela-lembretes th {
+      text-align: left;
+      color: #38bdf8;
+      padding-bottom: 10px;
+    }
+
+    .tabela-lembretes td {
+      padding: 8px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    /* Mudar cursor ao passar sobre o número da data */
 .fc .fc-daygrid-day-number {
   cursor: pointer; /* transforma em "mãozinha" */
   color: #1e3a8a;  /* azul escuro, se quiser manter */

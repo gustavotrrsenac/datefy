@@ -1,57 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <style>
-    .fc .fc-daygrid-day-number {
-      color: #000000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .fc .fc-daygrid-day-number:hover {
-      color: #1e3a8a;
-      text-decoration: underline;
-    }
-  </style>
-</head>
 
+<head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard - DateFY</title>
+  <title>DateFY</title>
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- FullCalendar CSS -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-
-  <style>
-    /* Caixa de eventos do dia */
-    #eventos-dia {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #f5f5dc; /* bege claro */
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    #eventos-dia h4 {
-      margin: 0 0 8px;
-      color: #1e3a8a; /* azul escuro */
-    }
-    #eventos-dia ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    #eventos-dia li {
-      background: #1e90ff; /* azul médio */
-      color: #fff;
-      padding: 5px 8px;
-      margin-bottom: 5px;
-      border-radius: 4px;
-    }
-  </style>
 </head>
+
 <body>
+
   <aside class="sidebar">
     <h2 class="logo">Date<span>FY</span></h2>
     <ul>
@@ -64,146 +24,132 @@
   </aside>
 
   <main>
+
     <h1 class="titulo-pagina">Olá, {{ nome }} </h1>
     <p class="descricao-texto">Aqui está seu dashboard atualizado.</p>
 
+    <!-- Painel dos cards -->
     <section class="cards-dashboard">
       <div class="card-box">
         <h3>Tarefas do dia</h3>
         <p id="dash-tarefas">0</p>
       </div>
+
       <div class="card-box entrada">
         <h3>Entradas</h3>
         <p id="dash-entradas">R$ 0,00</p>
       </div>
+
       <div class="card-box saida">
         <h3>Saídas</h3>
         <p id="dash-saidas">R$ 0,00</p>
       </div>
+
       <div class="card-box total">
         <h3>Total</h3>
         <p id="dash-total">R$ 0,00</p>
       </div>
     </section>
-    <!-- NOVA SEÇÃO DE CALENDÁRIO -->
+
+    <!-- CALENDÁRIO -->
     <section class="painel-info" style="margin-top:18px;">
       <h3>Calendário</h3>
       <div id="calendar"></div>
-      <!-- Caixa para mostrar eventos do dia -->
-      <div id="eventos-dia" style="display:none;">
+
+      <div id="eventos-dia">
         <h4>Eventos do Dia</h4>
         <ul id="lista-eventos"></ul>
       </div>
     </section>
 
-    <!-- NOVA SEÇÃO DE RESUMO FINANCEIRO -->
-     <section class="painel-info" style="margin-top:18px;">
-  <h3>Resumo Financeiro</h3>
-  <table class="tabela-financas">
-    <thead>
-      <tr>
-        <th>Origem</th>
-        <th>Entradas (R$)</th>
-        <th>Saídas (R$)</th>
-        <th>Total (R$)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Salário</td>
-        <td>5000,00</td>
-        <td>0,00</td>
-        <td>5000,00</td>
-      </tr>
-      <tr>
-        <td>Investimentos</td>
-        <td>800,00</td>
-        <td>200,00</td>
-        <td>600,00</td>
-      </tr>
-      <tr>
-        <td>Despesas Fixas</td>
-        <td>0,00</td>
-        <td>2500,00</td>
-        <td>-2500,00</td>
-      </tr>
-      <tr>
-        <td><strong>Total Geral</strong></td>
-        <td><strong>5800,00</strong></td>
-        <td><strong>2700,00</strong></td>
-        <td><strong>3100,00</strong></td>
-      </tr>
-    </tbody>
-  </table>
-     </section>
+    <!-- LEMBRETES  -->
+    <section class="painel-info" style="margin-top:18px;">
+      <h3>Lembretes</h3>
 
-    </main>
+      <table class="tabela-lembretes">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Status</th>
+          </tr>
+        </thead>
 
-  <!-- FullCalendar JS -->
+        <tbody>
+          <tr>
+            <td>Conta</td>
+            <td>Pagar luz</td>
+            <td>05/12/2025 - 09:00</td>
+            <td>🟨</td>
+          </tr>
+
+          <tr>
+            <td>Entrada</td>
+            <td>Salário</td>
+            <td>01/12/2025</td>
+            <td>🟩</td>
+          </tr>
+
+          <tr>
+            <td>Evento</td>
+            <td>Reunião equipe</td>
+            <td>03/12/2025 - 14:00</td>
+            <td>🟦</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    atualizarDash();
+    document.addEventListener('DOMContentLoaded', function () {
 
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      locale: 'pt-br',
-      height: 'auto',
-      events: [
-        { title: 'Reunião', start: '2025-11-22' },
-        { title: 'Pagamento', start: '2025-11-25' },
-        { title: 'Aniversário', start: '2025-11-28' }
-      ],
+      var calendarEl = document.getElementById('calendar');
 
-      // 👉 Captura clique na data
-      dateClick: function(info) {
-        var eventosDoDia = calendar.getEvents().filter(function(ev) {
-          return ev.startStr === info.dateStr;
-        });
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'pt-br',
+        height: 'auto',
 
-        var listaEl = document.getElementById("lista-eventos");
-        listaEl.innerHTML = ""; // limpa lista
+        /* EVENTOS */
+        events: [
+          { title: 'Salário', start: '2025-12-01' },
+          { title: 'Reunião equipe', start: '2025-12-03' },
+          { title: 'Pagar luz', start: '2025-12-05' },
+          { title: 'Salário', start: '2025-12-31' },
+          { title: 'Reunião equipe', start: '2026-01-03' }
+        ],
 
-        if (eventosDoDia.length > 0) {
-          eventosDoDia.forEach(function(ev) {
-            var li = document.createElement("li");
-            li.textContent = ev.title;
-            listaEl.appendChild(li);
-          });
-          document.getElementById("eventos-dia").style.display = "block";
-        } else {
-          var li = document.createElement("li");
-          li.textContent = "Nenhum evento neste dia.";
-          listaEl.appendChild(li);
+        dateClick: function (info) {
+          var eventos = calendar.getEvents().filter(ev => ev.startStr === info.dateStr);
+          var lista = document.getElementById("lista-eventos");
+          lista.innerHTML = "";
+
+          if (eventos.length === 0) {
+            lista.innerHTML = "<li>Nenhum evento neste dia.</li>";
+          } else {
+            eventos.forEach(ev => {
+              var li = document.createElement("li");
+              li.textContent = ev.title;
+              lista.appendChild(li);
+            });
+          }
+
           document.getElementById("eventos-dia").style.display = "block";
         }
-      }
+      });
+
+      calendar.render();
+
     });
 
-    calendar.render();
-  });
-
-    async function atualizarDash() {
-      const res = await fetch("{{ url_for('financas_data') }}");
-      const data = await res.json();
-      const total = (data.totais.entrada || 0) - (data.totais.saida || 0);
-      document.getElementById("dash-entradas").innerText = "R$ " + (data.totais.entrada || 0).toFixed(2);
-      document.getElementById("dash-saidas").innerText = "R$ " + (data.totais.saida || 0).toFixed(2);
-      document.getElementById("dash-total").innerText = "R$ " + total.toFixed(2);
-
-      document.getElementById("dash-tarefas").innerText = "Verifique Vida Pessoal";
-
-      const ctx = document.getElementById("dash-chart").getContext('2d');
-      if(window._dashChart) window._dashChart.destroy();
-      window._dashChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: data.por_categoria.labels,
-          datasets: [{ data: data.por_categoria.values, backgroundColor: data.por_categoria.colors }]
-        },
-        options: { plugins: { legend: { position: 'bottom' } } }
-      });
-    }
   </script>
+
+</body>
+
+</html>
