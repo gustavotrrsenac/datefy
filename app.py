@@ -131,8 +131,9 @@ def perfil():
 
     conn = get_db()
     user = conn.execute("SELECT nome, email FROM usuarios WHERE id = ?", (session["user_id"],)).fetchone()
+    conn.close()
 
-    return render_template("perfil.html", nome=user["nome"], email=user["email"])
+    return render_template("perfil.html", usuario=user)
 
 
 # ---------------- VIDA PESSOAL / TAREFAS ----------------
@@ -253,31 +254,35 @@ def recuperar_senha():
         flash(f"Se {email} estiver cadastrado, enviaremos instruções por e-mail (simulado).", "info")
         return redirect(url_for("login"))
     return render_template("recuperar_senha.html")
+    
+@app.route("/editar_perfil", methods=["GET", "POST"])
+def editar_perfil():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+
+        conn.execute(
+            "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?",
+            (nome, email, session["user_id"])
+        )
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("perfil"))
+
+    usuario = conn.execute(
+        "SELECT nome, email FROM usuarios WHERE id = ?",
+        (session["user_id"],)
+    ).fetchone()
+    conn.close()
+
+    return render_template("editar_perfil.html", usuario=usuario)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-@app.route('/perfil')
-def perfil():
-    # Exemplo: dados fictícios do usuário
-    usuario = {
-        "nome": "Barbara",
-        "email": "barbara@email.com",
-        "data_cadastro": "20/11/2025"
-    }
-    return render_template('perfil.html', usuario=usuario)
-
-@app.route('/editar_perfil', methods=['GET', 'POST'])
-def editar_perfil():
-    if request.method == 'POST':
-        # Aqui você trataria os dados enviados pelo formulário
-        nome = request.form['nome']
-        email = request.form['email']
-        # salvar no banco...
-        return redirect(url_for('perfil'))
-    return render_template('editar_perfil.html')
-
-@app.route('/perfil')
-def perfil():
-    user = {"nome": "Barbara", "email": "barbara@email.com"}
-    return render_template("perfil.html", nome=user["nome"], email=user["email"])
