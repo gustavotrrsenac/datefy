@@ -135,10 +135,15 @@ body.tela-interna { display:flex; min-height:100vh; }
 .btn-padrao { background:#00AEFF; color:#072634; padding:12px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
 .btn-padrao:hover { background:white; color:#072634; }
 
-/* ================= FINANÇAS ================= */
+/* =================  RESUMO FINANCEIRO ================= */
 .painel-info table { width:100%; border-collapse:collapse; margin-top:12px; }
 .painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color:#000; }
 .painel-info table thead th { color:#000; }
+
+/* ================= ÚLTIMOS LANÇAMENTO ================= */
+.painel-resumo table { width:100%; border-collapse:collapse; margin-top:12px; }
+.painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #fff;; }
+.painel-info table thead th { color: #fff; }
 
 /* responsive */
 @media(max-width:900px) {
@@ -360,7 +365,7 @@ body.tela-interna { display:flex; min-height:100vh; }
 .titulo-pagina {
   text-align: center;
   margin-bottom: 25px;
-  color: #333;
+  color: #fff;
   font-size: 24px;
   font-weight: bold;
 }
