@@ -111,7 +111,7 @@ main {
   padding:18px;
   border-radius:12px;
   margin-bottom:12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18px rgba(31, 31, 31, 0.12);
 }
 
 /* ================= TAREFAS ================= */
@@ -129,16 +129,16 @@ main {
 /* ================= FORM ADD TAREFA (telas internas) ================= */
 body.tela-interna { display:flex; min-height:100vh; }
 .conteudo-principal { flex:1; padding:36px; }
-.form-box { background:#234C6A; padding:20px; border-radius:12px; width:100%; max-width:520px; display:flex; flex-direction:column; gap:12px; box-shadow:0 6px 18px rgba(0,0,0,0.22); }
+.form-box { background:#234C6A; padding:20px; border-radius:12px; width:100%; max-width:520px; display:flex; flex-direction:column; gap:12px; box-shadow:0 6px 18px rgba(247, 245, 245, 0.22); }
 .form-box input, .form-box textarea, .form-box select { background:#1B3C53; border:none; color:white; padding:10px; border-radius:8px; }
 .form-box input:focus, .form-box textarea:focus, .form-box select:focus { outline:2px solid #00AEFF; }
-.btn-padrao { background:#00AEFF; color:#072634; padding:12px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
-.btn-padrao:hover { background:white; color:#072634; }
+.btn-padrao { background:#00AEFF; color:#ffffff; padding:12px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
+.btn-padrao:hover { background:white; color:#ffffff; }
 
 /* =================  RESUMO FINANCEIRO ================= */
 .painel-info table { width:100%; border-collapse:collapse; margin-top:12px; }
-.painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color:#000; }
-.painel-info table thead th { color:#000; }
+.painel-info table th, .painel-info table td { padding:8px 6px; border-bottom: 1px solid rgba(247, 245, 245, 0.06); color:#ffffff; }
+.painel-info table thead th { color:#ffffff; }
 
 /* ================= ÚLTIMOS LANÇAMENTO ================= */
 .painel-resumo table { width:100%; border-collapse:collapse; margin-top:12px; }
@@ -365,7 +365,11 @@ body.tela-interna { display:flex; min-height:100vh; }
 .titulo-pagina {
   text-align: center;
   margin-bottom: 25px;
+<<<<<<< HEAD
   color: #fff;
+=======
+  color: #ffffff;
+>>>>>>> 951da56c3717d6aab691d4dcb754d028e9c73c21
   font-size: 24px;
   font-weight: bold;
 }
@@ -379,7 +383,7 @@ body.tela-interna { display:flex; min-height:100vh; }
 .campo-form {
   display: flex;
   flex-direction: column;
-  color:#0f172a
+  color:#2a0f0f
 }
 
 .campo-form label {
