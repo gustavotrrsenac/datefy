@@ -308,7 +308,7 @@ body.tela-interna { display:flex; min-height:100vh; }
 
     .tabela-lembretes td {
       padding: 8px 0;
-      border-bottom: 1px solid #1e293b;
+      border-bottom: 1px solid #809ac4;
     }
     /* Mudar cursor ao passar sobre o número da data */
 .fc .fc-daygrid-day-number {
