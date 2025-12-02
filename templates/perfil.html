@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="utf-8"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Perfil - DateFY</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<!-- Aba lateral -->
+<aside class="sidebar">
+    <h2 class="logo">Date<span>FY</span></h2>
+    <ul>
+      <li><a href="{{ url_for('dashboard') }}"> Visão Geral</a></li>
+      <li><a href="{{ url_for('vida_pessoal') }}"> Vida Pessoal</a></li>
+      <li><a href="{{ url_for('financas') }}" > Finanças</a></li>
+      <li><a href="{{ url_for('perfil') }}" class="active" > Perfil</a></li>
+      <li><a href="{{ url_for('logout') }}"> Sair</a></li>
+      <main class="flex-grow p-1 md:p-10"></main>
+    </ul>
+  </aside>
 
 <script>
     tailwind.config = {
@@ -25,7 +39,7 @@
             'brand-primary-button-hover': '#5a82a2',
           },
           fontFamily: {
-            'sans': ['Poppins', 'Inter', 'sans-serif'],
+            'sans': ['sans-serif'],
           },
         },
       },
@@ -37,14 +51,8 @@
 
 <div class="flex min-h-screen flex-col bg-brand-base">
 
-<!-- Header -->
-<header class="bg-brand-accent-dark/50 py-4 px-6 md:px-10 shadow-lg backdrop-blur-sm">
-    <h1 class="text-3xl font-bold tracking-wider text-white">DateFY</h1>
-</header>
-
-
 <!-- Main -->
-<main class="flex-grow p-6 md:p-10">
+<main class="flex-grow p-1 md:p-10">
 <div class="mx-auto max-w-4xl">
 
 <!-- Perfil (foto + nome) -->

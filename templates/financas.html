@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <aside class="sidebar">
     <h2 class="logo">Date<span>FY</span></h2>
@@ -14,6 +15,7 @@
       <li><a href="{{ url_for('dashboard') }}"> Visão Geral</a></li>
       <li><a href="{{ url_for('vida_pessoal') }}"> Vida Pessoal</a></li>
       <li><a href="{{ url_for('financas') }}" class="active"> Finanças</a></li>
+      <li><a href="{{ url_for('perfil') }}"> Perfil</a></li>
       <li><a href="{{ url_for('logout') }}"> Sair</a></li>
     </ul>
   </aside>
