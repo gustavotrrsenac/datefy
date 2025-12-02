@@ -26,7 +26,6 @@
   <main>
 
     <h1 class="titulo-pagina">Olá, {{ nome }} </h1>
-    <p class="descricao-texto">Aqui está seu dashboard atualizado.</p>
 
     <!-- Painel dos cards -->
     <section class="cards-dashboard">
@@ -60,7 +59,32 @@
         <h4>Eventos do Dia</h4>
         <ul id="lista-eventos"></ul>
       </div>
+      <!-- INPUT DE EVENTOS EM JSON -->
+      <input type="text" id="eventosInput" value='[
+      {"title":"Pagamento","start":"2025-02-10"},
+      {"title":"Reunião","start":"2025-02-15"}
+      ]' hidden>
+
     </section>
+    
+    <section class="bloco-dashboard">
+      <h2>📝 Suas Tarefas Recentes</h2>
+    
+      {% if tarefas %}
+        <ul class="lista-dashboard">
+          {% for t in tarefas %}
+            <li class="item-tarefa {% if t['status'] == 1 %}concluida{% endif %}">
+              <strong>{{ t['titulo'] }}</strong>
+              <small>{{ t['data'] }}</small>
+              <span class="categoria">{{ t['categoria'] or 'Geral' }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Nenhuma tarefa cadastrada ainda.</p>
+      {% endif %}
+    </section>
+    
 
     <!-- LEMBRETES  -->
     <section class="painel-info" style="margin-top:18px;">
@@ -103,52 +127,90 @@
 
   </main>
 
-  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-      var calendarEl = document.getElementById('calendar');
+      const calendarEl = document.getElementById('calendar');
 
-      var calendar = new FullCalendar.Calendar(calendarEl, {
+      const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'pt-br',
         height: 'auto',
 
-        /* EVENTOS */
-        events: [
-          { title: 'Salário', start: '2025-12-01' },
-          { title: 'Reunião equipe', start: '2025-12-03' },
-          { title: 'Pagar luz', start: '2025-12-05' },
-          { title: 'Salário', start: '2025-12-31' },
-          { title: 'Reunião equipe', start: '2026-01-03' }
-        ],
+        events: "/eventos-json",
 
-        dateClick: function (info) {
-          var eventos = calendar.getEvents().filter(ev => ev.startStr === info.dateStr);
-          var lista = document.getElementById("lista-eventos");
+        eventDisplay: "list-item",
+
+        dateClick: function(info) {
+          const dataFormatada = info.dateStr.split("T")[0];
+
+          const eventosDoDia = calendar.getEvents().filter(ev => {
+            return ev.startStr && ev.startStr.startsWith(dataFormatada);
+          });
+
+          const lista = document.getElementById("lista-eventos");
           lista.innerHTML = "";
 
-          if (eventos.length === 0) {
+          if (eventosDoDia.length === 0) {
             lista.innerHTML = "<li>Nenhum evento neste dia.</li>";
           } else {
-            eventos.forEach(ev => {
-              var li = document.createElement("li");
+            eventosDoDia.forEach(ev => {
+              const li = document.createElement("li");
               li.textContent = ev.title;
               lista.appendChild(li);
             });
           }
 
           document.getElementById("eventos-dia").style.display = "block";
+        },
+
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          const ev = info.event;
+          const detalhes = [
+            "Título: " + ev.title,
+            ev.extendedProps.tipo ? ("Tipo: " + ev.extendedProps.tipo) : null,
+            ev.start ? ("Data: " + ev.start.toISOString().split("T")[0]) : null
+          ].filter(Boolean).join(" — ");
+
+          alert(detalhes);
+        },
+
+        eventClassNames: function(arg) {
+          if (arg.event.title && arg.event.title.startsWith("Tarefa:")) {
+            return ['tarefa-evento'];
+          }
+          return [];
         }
+
       });
 
       calendar.render();
 
-    });
+      fetch('/financas/data').then(r => r.json()).then(data => {
+        if (data && data.totais) {
+          document.getElementById('dash-entradas').textContent = "R$ " + (data.totais.entrada||0).toFixed(2);
+          document.getElementById('dash-saidas').textContent = "R$ " + (data.totais.saida||0).toFixed(2);
+          const total = (data.totais.entrada||0) - (data.totais.saida||0);
+          document.getElementById('dash-total').textContent = "R$ " + total.toFixed(2);
+        }
+      }).catch(()=>{ /*silent*/ });
 
+      fetch('/eventos-json').then(r => r.json()).then(list => {
+        const hoje = new Date().toISOString().split('T')[0];
+        const tarefasHoje = list.filter(ev => ev.title && ev.title.startsWith("Tarefa:") && ev.start && ev.start.startsWith(hoje));
+        document.getElementById('dash-tarefas').textContent = tarefasHoje.length;
+      }).catch(()=>{ /*silent*/ });
+
+    });
   </script>
+
+</body>
+</html>
+
+    
 
 </body>
 

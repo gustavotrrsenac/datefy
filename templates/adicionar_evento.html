@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Evento</title>
+</head>
+<body>
+
+    <h2>Adicionar Novo Evento</h2>
+
+    <form action="/add_evento" method="POST">
+        <!-- TÍTULO DO EVENTO -->
+        <label for="titulo">Título do Evento:</label><br>
+        <input type="text" id="titulo" name="titulo" required><br><br>
+
+        <!-- DATA -->
+        <label for="data">Data:</label><br>
+        <input type="date" id="data" name="data" required><br><br>
+
+        <!-- HORA (opcional) -->
+        <label for="hora">Hora:</label><br>
+        <input type="time" id="hora" name="hora"><br><br>
+
+        <!-- DESCRIÇÃO -->
+        <label for="descricao">Descrição:</label><br>
+        <textarea id="descricao" name="descricao" rows="4"></textarea><br><br>
+
+        <!-- COR DO EVENTO -->
+        <label for="cor">Cor do Evento:</label><br>
+        <input type="color" id="cor" name="cor" value="#456882"><br><br>
+
+        <button type="submit">Salvar Evento</button>
+    </form>
+
+</body>
+</html>
