@@ -286,3 +286,31 @@ def editar_perfil():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+#----teste do dashboard ----
+
+@app.route("/api/tarefas")
+def api_tarefas():
+    if "user_id" not in session:
+        return jsonify({"error": "Não autorizado"}), 401
+
+    conn = get_db()
+    
+    tarefas = conn.execute(
+        "SELECT titulo, data FROM tarefas WHERE user_id = ? AND status = 0",
+        (session["user_id"],)
+    ).fetchall()
+    conn.close()
+
+   
+    eventos = []
+    for tarefa in tarefas:
+        eventos.append({
+            "title": tarefa["titulo"],
+            "start": tarefa["data"], 
+            "allDay": True,
+            "color": "#FF5722" 
+        })
+
+    return jsonify(eventos)

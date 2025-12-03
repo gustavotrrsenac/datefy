@@ -116,14 +116,9 @@
         locale: 'pt-br',
         height: 'auto',
 
+        
         /* EVENTOS */
-        events: [
-          { title: 'Salário', start: '2025-12-01' },
-          { title: 'Reunião equipe', start: '2025-12-03' },
-          { title: 'Pagar luz', start: '2025-12-05' },
-          { title: 'Salário', start: '2025-12-31' },
-          { title: 'Reunião equipe', start: '2026-01-03' }
-        ],
+        events: '{{ url_for("api_tarefas") }}',
 
         dateClick: function (info) {
           var eventos = calendar.getEvents().filter(ev => ev.startStr === info.dateStr);
