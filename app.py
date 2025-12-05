@@ -1,29 +1,34 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask
 from flask_bcrypt import Bcrypt
-import sqlite3, os
-from decimal import Decimal
+import pymysql
+import os
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "minha_chave_segura")
 bcrypt = Bcrypt(app)
 
-DB_PATH = "usuarios.db"
-
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    return pymysql.connect(
+        host="localhost",
+        user="root",
+        password="minha_senha",
+        database="meu_banco",
+        cursorclass=pymysql.cursors.DictCursor,
+        autocommit=True
+    )
 
-# --- criar tabelas necessárias (usuarios, tarefas, financas) ---
+# Criar tabelas
 with get_db() as conn:
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            senha_hash TEXT NOT NULL
-        )
-    """)
+    with conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                senha_hash VARCHAR(255) NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        """)
+
     conn.execute("""
         CREATE TABLE IF NOT EXISTS tarefas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
