@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "mysql2": "^3.15.3"
+  },
+  "name": "daty",
+  "version": "1.0.0",
+  "description": "**Datefy** é um projeto de software com o objetivo de **gerenciar rotinas pessoais, financeiras e profissionais de forma intuitiva e simplificada** [1]. Atuando como um **Calendário Financeiro** [1], ele centraliza tarefas, contas e eventos em uma única plataforma visual e interativa.",
+  "main": "database.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavotrrsenac/datefy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gustavotrrsenac/datefy/issues"
+  },
+  "homepage": "https://github.com/gustavotrrsenac/datefy#readme"
+}

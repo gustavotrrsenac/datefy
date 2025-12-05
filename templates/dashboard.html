@@ -7,6 +7,7 @@
   <title>DateFY</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="static/css/style.css">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 </head>
 
@@ -32,7 +33,7 @@
       <div class="card-box">
         <h3>Tarefas do dia</h3>
         <p id="dash-tarefas">0</p>
-      </div>
+      </div>  
 
       <div class="card-box entrada">
         <h3>Entradas</h3>
@@ -59,6 +60,7 @@
         <h4>Eventos do Dia</h4>
         <ul id="lista-eventos"></ul>
       </div>
+
       <!-- INPUT DE EVENTOS EM JSON -->
       <input type="text" id="eventosInput" value='[
       {"title":"Pagamento","start":"2025-02-10"},
@@ -67,6 +69,47 @@
 
     </section>
     
+
+    
+
+    <!-- LEMBRETES  -->
+    <section class="painel-info" style="margin-top:18px;">
+      <h3>Lembretes</h3>
+    
+      <table class="tabela-lembretes">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+    
+        <tbody>
+          {% if tarefas %}
+            {% for t in tarefas %}
+              <tr>
+                <td>Tarefa</td>
+                <td>{{ t['titulo'] }}</td>
+                <td>{{ t['data'] }}</td>
+    
+                {% if t['status'] == 1 %}
+                  <td>🟩 Concluída</td>
+                {% else %}
+                  <td>🟨 Pendente</td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4">Nenhuma tarefa cadastrada ainda.</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+
     <section class="bloco-dashboard">
       <h2>📝 Suas Tarefas Recentes</h2>
     
@@ -86,45 +129,6 @@
     </section>
     
 
-    <!-- LEMBRETES  -->
-    <section class="painel-info" style="margin-top:18px;">
-      <h3>Lembretes</h3>
-
-      <table class="tabela-lembretes">
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Descrição</th>
-            <th>Data</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>Conta</td>
-            <td>Pagar luz</td>
-            <td>05/12/2025 - 09:00</td>
-            <td>🟨</td>
-          </tr>
-
-          <tr>
-            <td>Entrada</td>
-            <td>Salário</td>
-            <td>01/12/2025</td>
-            <td>🟩</td>
-          </tr>
-
-          <tr>
-            <td>Evento</td>
-            <td>Reunião equipe</td>
-            <td>03/12/2025 - 14:00</td>
-            <td>🟦</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
@@ -139,7 +143,8 @@
         locale: 'pt-br',
         height: 'auto',
 
-        events: "/eventos-json",
+        /* ROTA CORRETA */
+        events: "{{ url_for('api_tarefas') }}",
 
         eventDisplay: "list-item",
 
@@ -196,22 +201,16 @@
           const total = (data.totais.entrada||0) - (data.totais.saida||0);
           document.getElementById('dash-total').textContent = "R$ " + total.toFixed(2);
         }
-      }).catch(()=>{ /*silent*/ });
+      }).catch(()=>{});
 
       fetch('/eventos-json').then(r => r.json()).then(list => {
         const hoje = new Date().toISOString().split('T')[0];
         const tarefasHoje = list.filter(ev => ev.title && ev.title.startsWith("Tarefa:") && ev.start && ev.start.startsWith(hoje));
         document.getElementById('dash-tarefas').textContent = tarefasHoje.length;
-      }).catch(()=>{ /*silent*/ });
+      }).catch(()=>{});
 
     });
   </script>
 
 </body>
-</html>
-
-    
-
-</body>
-
 </html>

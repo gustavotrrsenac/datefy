@@ -14,21 +14,8 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-# --- CRIAR TABELAS ---
+# ----------------- CRIAR TABELAS -----------------
 with get_db() as conn:
-
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS eventos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        usuario_id INTEGER NOT NULL,
-        titulo TEXT NOT NULL,
-        data TEXT NOT NULL,
-        hora TEXT,
-        tipo TEXT,          
-        cor TEXT,         
-        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-    );
-    """)
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS usuarios (
@@ -36,6 +23,19 @@ with get_db() as conn:
             nome TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
             senha_hash TEXT NOT NULL
+        )
+    """)
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS eventos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            titulo TEXT NOT NULL,
+            data TEXT NOT NULL,
+            hora TEXT,
+            tipo TEXT,
+            cor TEXT,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         )
     """)
 
@@ -69,7 +69,8 @@ with get_db() as conn:
 
     conn.commit()
 
-# --- CATEGORIAS ---
+
+# ----------------- CATEGORIAS FINANCEIRAS -----------------
 CATEGORIAS = [
     {"key": "salario", "label": "Salário/Trabalho", "color": "#4CAF50"},
     {"key": "casa", "label": "Casa", "color": "#2196F3"},
@@ -83,7 +84,8 @@ CATEGORIAS = [
     {"key": "lazer", "label": "Lazer", "color": "#FFC107"},
 ]
 
-# ---------------- ROTAS AUTENTICAÇÃO ----------------
+
+# ----------------- AUTENTICAÇÃO -----------------
 @app.route("/")
 def index():
     return redirect(url_for("login"))
@@ -101,7 +103,6 @@ def login():
         if user and bcrypt.check_password_hash(user["senha_hash"], senha):
             session["user_id"] = user["id"]
             session["nome"] = user["nome"]
-
             flash("Login realizado com sucesso!", "success")
             return redirect(url_for("dashboard"))
 
@@ -109,6 +110,7 @@ def login():
         return redirect(url_for("login"))
 
     return render_template("login.html")
+
 
 @app.route("/criar-conta", methods=["GET","POST"])
 def criar_conta():
@@ -130,7 +132,7 @@ def criar_conta():
                     "INSERT INTO usuarios (nome, email, senha_hash) VALUES (?, ?, ?)",
                     (nome, email, senha_hash)
                 )
-            flash("Conta criada com sucesso! Faça login.", "success")
+            flash("Conta criada com sucesso!", "success")
             return redirect(url_for("login"))
 
         except sqlite3.IntegrityError:
@@ -139,26 +141,25 @@ def criar_conta():
 
     return render_template("criar_conta.html")
 
+
 @app.route("/logout")
 def logout():
     session.clear()
     flash("Você saiu da conta.", "info")
     return redirect(url_for("login"))
 
-# ---------------- ROTAS PRINCIPAIS ----------------
+
+# ----------------- DASHBOARD -----------------
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
     conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute(
+    tarefas = conn.execute(
         "SELECT id, titulo, data, categoria, status FROM tarefas WHERE user_id = ? ORDER BY data ASC",
         (session["user_id"],)
-    )
-    tarefas = cursor.fetchall()
+    ).fetchall()
     conn.close()
 
     return render_template(
@@ -167,7 +168,8 @@ def dashboard():
         tarefas=tarefas
     )
 
-# ---------------- VIDA PESSOAL ----------------
+
+# ----------------- VIDA PESSOAL -----------------
 @app.route("/vida-pessoal")
 def vida_pessoal():
     if "user_id" not in session:
@@ -182,11 +184,13 @@ def vida_pessoal():
 
     return render_template("vida_pessoal.html", tarefas=tarefas)
 
+
 @app.route("/add-tarefa")
 def add_tarefa():
     if "user_id" not in session:
         return redirect(url_for("login"))
     return render_template("tarefas.html")
+
 
 @app.route("/salvar-tarefa", methods=["POST"])
 def salvar_tarefa():
@@ -207,6 +211,7 @@ def salvar_tarefa():
     flash("Tarefa adicionada com sucesso!", "success")
     return redirect(url_for("vida_pessoal"))
 
+
 @app.route("/concluir-tarefa/<int:id>")
 def concluir_tarefa(id):
     if "user_id" not in session:
@@ -220,6 +225,7 @@ def concluir_tarefa(id):
 
     flash("Tarefa concluída!", "success")
     return redirect(url_for("vida_pessoal"))
+
 
 @app.route("/desfazer-tarefa/<int:id>")
 def desfazer_tarefa(id):
@@ -235,7 +241,8 @@ def desfazer_tarefa(id):
     flash("Tarefa marcada como pendente.", "warning")
     return redirect(url_for("vida_pessoal"))
 
-# ---------------- FINANÇAS ----------------
+
+# ----------------- FINANÇAS -----------------
 @app.route("/financas", methods=["GET","POST"])
 def financas():
     if "user_id" not in session:
@@ -277,6 +284,7 @@ def financas():
     conn.close()
 
     return render_template("financas.html", registros=rows, categorias=CATEGORIAS)
+
 
 @app.route("/financas/data")
 def financas_data():
@@ -329,7 +337,8 @@ def financas_data():
         "por_categoria": {"labels": labels, "values": values, "colors": colors}
     })
 
-# ---------------- EVENTOS DO CALENDÁRIO (NOVA ROTA) ----------------
+
+# ----------------- CALENDÁRIO: EVENTOS JSON -----------------
 @app.route("/eventos-json")
 def eventos_json():
     if "user_id" not in session:
@@ -338,7 +347,7 @@ def eventos_json():
     user_id = session["user_id"]
     conn = get_db()
 
-    # --- Eventos manuais ---
+    # Eventos criados manualmente
     eventos = conn.execute("""
         SELECT titulo, data, hora, tipo, cor 
         FROM eventos 
@@ -357,7 +366,7 @@ def eventos_json():
             "color": e["cor"] or "#2196F3"
         })
 
-    # --- Tarefas ---
+    # Tarefas no calendário
     tarefas = conn.execute("""
         SELECT titulo, data, categoria 
         FROM tarefas 
@@ -371,7 +380,7 @@ def eventos_json():
             "color": "#FF9800"
         })
 
-    # --- Finanças ---
+    # Finanças no calendário
     financas = conn.execute("""
         SELECT descricao, valor, tipo, data 
         FROM financas 
@@ -392,12 +401,14 @@ def eventos_json():
     conn.close()
     return jsonify(eventos_list)
 
-# ---------------- PERFIL ----------------
+
+# ----------------- PERFIL -----------------
 @app.route("/perfil")
 def perfil():
     if "user_id" not in session:
         return redirect(url_for("login"))
     return redirect(url_for("editar_perfil"))
+
 
 @app.route("/editar_perfil", methods=["GET", "POST"])
 def editar_perfil():
@@ -430,5 +441,40 @@ def editar_perfil():
 
     return render_template("editar_perfil.html", usuario=usuario)
 
+
+# ----------------- API TAREFAS PARA O DASHBOARD -----------------
+@app.route("/api/tarefas")
+def api_tarefas():
+    if "user_id" not in session:
+        return jsonify({"error": "Não autorizado"}), 401
+
+    conn = get_db()
+
+    tarefas = conn.execute(
+        "SELECT titulo, data FROM tarefas WHERE user_id = ? AND status = 0",
+        (session["user_id"],)
+    ).fetchall()
+
+    conn.close()
+
+    eventos = []
+    for tarefa in tarefas:
+        eventos.append({
+            "title": tarefa["titulo"],
+            "start": tarefa["data"],
+            "allDay": True,
+            "color": "#FF5722"
+        })
+
+    return jsonify(eventos)
+
+
+# ----------------- RECUPERAR SENHA -----------------
+@app.route("/recuperar-senha")
+def recuperar_senha():
+    return render_template("recuperar_senha.html")
+
+
+# ----------------- INICIALIZAR FLASK -----------------
 if __name__ == "__main__":
     app.run(debug=True)

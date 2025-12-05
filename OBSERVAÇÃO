@@ -1,0 +1,2 @@
+Ignorem a pasta controllers, public/js e routes
+Ignorem os arquivos server.js e database.js
