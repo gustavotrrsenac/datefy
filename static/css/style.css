@@ -437,7 +437,7 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-decoration: none;
   cursor: pointer;
   transform: translate(20%, 20%);
-  border: 2px solid #fff;
+  border: 2px solid #fff; /* opcional */
 }
 
 /* abas (sidebar interna) */
