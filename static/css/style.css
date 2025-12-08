@@ -314,11 +314,8 @@ body.tela-interna { display:flex; min-height:100vh; }
 .titulo-pagina {
   text-align: center;
   margin-bottom: 25px;
-<<<<<<< HEAD
   color: #fff;
-=======
   color: #ffffff;
->>>>>>> 951da56c3717d6aab691d4dcb754d028e9c73c21
   font-size: 24px;
   font-weight: bold;
 }
