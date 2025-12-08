@@ -112,7 +112,7 @@ CATEGORIAS = [
 @app.route("/")
 def index():
     return redirect(url_for("login"))
-
+ 
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -206,7 +206,9 @@ def api_tarefas():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    return render_template("dashboard.html", nome=session.get("nome","Usuário"))
+    totalGastos = 29; tarefasDoDia = 29; entradas = 29; saidas = 29;  
+    return render_template("dashboard.html", nome=session.get("nome","Usuário"), tg=totalGastos, td=tarefasDoDia, entradas=entradas, saidas=saidas)
+
 
 @app.route("/perfil")
 def perfil():
