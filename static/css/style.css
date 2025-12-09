@@ -315,7 +315,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-align: center;
   margin-bottom: 25px;
   color: #fff;
-  color: #ffffff;
   font-size: 24px;
   font-weight: bold;
 }
