@@ -6,95 +6,96 @@ from peewee import *
 from playhouse.shortcuts import model_to_dict
 from decimal import Decimal
 from datetime import datetime
+
 # ------------------------------
 
-app = Flask(__name__) # CORREÇÃO: Alterado 'name' para 'name_'
+app = Flask(__name__)
 # A chave secreta é usada para sessões.
 app.secret_key = os.getenv("SECRET_KEY", "minha_chave_segura")
 bcrypt = Bcrypt(app)
 
 # ---------------- CONFIGURAÇÕES DO MYSQL COM PEEWEE ----------------
-# !!! ATENÇÃO: VERIFIQUE SE SUAS CREDENCIAIS ESTÃO AQUI !!!
 MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
 MYSQL_USER = os.getenv("MYSQL_USER", "root")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "senac")
-MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy_db") 
+MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy_db")
 
 # Configuração do banco de dados Peewee (MySQL)
-# Este objeto 'db' gerencia a conexão com o MySQL
 db = MySQLDatabase(
-    MYSQL_DATABASE, 
-    user=MYSQL_USER, 
-    password=MYSQL_PASSWORD, 
-    host=MYSQL_HOST
+    MYSQL_DATABASE,
+    user=MYSQL_USER,
+    password=MYSQL_PASSWORD,
+    host=MYSQL_HOST,
 )
 
 # --- Definição dos Modelos (Mapeamento ORM) ---
-# Peewee Models (representam as tabelas)
 class BaseModel(Model):
-    """Classe base que define o banco de dados para todos os modelos."""
     class Meta:
         database = db
 
 class Usuario(BaseModel):
-    """Mapeia a tabela 'usuarios'."""
     nome = CharField()
     email = CharField(unique=True)
     senha_hash = CharField()
+
     class Meta:
         table_name = 'usuarios'
 
 class Tarefa(BaseModel):
-    """Mapeia a tabela 'tarefas'."""
     user = ForeignKeyField(Usuario, backref='tarefas', column_name='user_id')
     titulo = CharField()
     descricao = TextField(null=True)
-    data = CharField() # Formato YYYY-MM-DD
+    data = CharField()  # Formato YYYY-MM-DD
     categoria = CharField(null=True)
-    status = IntegerField(default=0) # 0: pendente, 1: concluída
+    status = IntegerField(default=0)  # 0: pendente, 1: concluída
+
     class Meta:
         table_name = 'tarefas'
 
 class Financa(BaseModel):
-    """Mapeia a tabela 'financas'."""
     usuario = ForeignKeyField(Usuario, backref='financas', column_name='usuario_id')
     descricao = CharField(null=True)
     categoria = CharField(null=True)
-    tipo = CharField(max_length=10)
+    tipo = CharField(max_length=10)  # 'entrada' ou 'saida'
     valor = FloatField()
     forma_pagamento = CharField(null=True)
     parcelas = IntegerField(default=1)
-    data = CharField(null=True)
+    data = CharField(null=True)  # YYYY-MM-DD
+
     class Meta:
         table_name = 'financas'
 
-# --- Hooks para gerenciamento de conexão (MANDATÓRIO com Peewee/Flask) ---
+# --- Hooks para gerenciamento de conexão (Peewee/Flask) ---
 @app.before_request
 def before_request():
-    """Abre a conexão antes de processar a requisição."""
-    db.connect()
+    """Abre a conexão antes de processar a requisição (se necessário)."""
+    try:
+        if db.is_closed():
+            db.connect()
+    except Exception as e:
+        # evita quebrar a aplicação inteira caso o DB esteja indisponível
+        app.logger.exception("Falha ao conectar ao banco: %s", e)
 
-@app.after_request
-def after_request(response):
-    """Fecha a conexão após o processamento da requisição."""
-    if not db.is_closed():
-        db.close()
-    return response
+@app.teardown_request
+def teardown_request(exception):
+    """Garante o fechamento da conexão mesmo em exceções."""
+    try:
+        if not db.is_closed():
+            db.close()
+    except Exception:
+        pass
 
-# --- Criação das tabelas necessárias ---
+# --- Criação das tabelas necessárias (apenas durante desenvolvimento) ---
 def create_tables():
-    """Cria as tabelas no MySQL se ainda não existirem, usando Peewee."""
     with db:
         db.create_tables([Usuario, Tarefa, Financa], safe=True)
 
 try:
     create_tables()
 except Exception as e:
-    # Se houver erro aqui, é geralmente problema de conexão ou credenciais
-    print(f"ERRO CRÍTICO ao criar tabelas no Peewee/MySQL: {e}")
-    # O aplicativo vai tentar rodar, mas as rotas falharão.
+    app.logger.warning("Não foi possível criar tabelas automaticamente: %s", e)
 
-# --- Categorias (opção 2) ---
+# --- Categorias ---
 CATEGORIAS = [
     {"key": "salario", "label": "Salário/Trabalho", "color": "#4CAF50"},
     {"key": "casa", "label": "Casa", "color": "#2196F3"},
@@ -112,43 +113,43 @@ CATEGORIAS = [
 @app.route("/")
 def index():
     return redirect(url_for("login"))
- 
-@app.route("/login", methods=["GET","POST"])
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form.get("email", "").strip()
         senha = request.form.get("password", "").strip()
-        
+
         try:
             user_model = Usuario.get(Usuario.email == email)
-            user = model_to_dict(user_model)
         except DoesNotExist:
-            user = None
-        
-        if user and bcrypt.check_password_hash(user["senha_hash"], senha):
-            session["user_id"] = user["id"]
-            session["nome"] = user["nome"]
+            user_model = None
+
+        if user_model and bcrypt.check_password_hash(user_model.senha_hash, senha):
+            session["user_id"] = user_model.id
+            session["nome"] = user_model.nome
             flash("Login realizado com sucesso!", "success")
             return redirect(url_for("dashboard"))
-        
+
         flash("E-mail ou senha incorretos.", "danger")
         return redirect(url_for("login"))
+
     return render_template("login.html")
 
-@app.route("/criar-conta", methods=["GET","POST"])
+@app.route("/criar-conta", methods=["GET", "POST"])
 def criar_conta():
     if request.method == "POST":
         nome = request.form.get("full-name", "").strip()
         email = request.form.get("email", "").strip()
         senha = request.form.get("password", "")
         confirmar = request.form.get("confirm-password", "")
-        
+
         if senha != confirmar:
             flash("As senhas não coincidem.", "danger")
             return redirect(url_for("criar_conta"))
-        
+
         senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-        
+
         try:
             Usuario.create(
                 nome=nome,
@@ -161,10 +162,10 @@ def criar_conta():
             flash("E-mail já registrado.", "warning")
             return redirect(url_for("criar_conta"))
         except Exception as e:
-            print(f"Erro ao criar conta: {e}")
+            app.logger.exception("Erro ao criar conta: %s", e)
             flash("Erro ao criar conta.", "danger")
             return redirect(url_for("criar_conta"))
-            
+
     return render_template("criar_conta.html")
 
 @app.route("/logout")
@@ -174,29 +175,27 @@ def logout():
     return redirect(url_for("login"))
 
 # ---------------- API PARA TAREFAS (CALENDÁRIO) ----------------
-
 @app.route("/api/tarefas")
 def api_tarefas():
     if "user_id" not in session:
         return jsonify({"error": "Não autorizado"}), 401
 
     user_id = session["user_id"]
-    
-    # Consulta Peewee: seleciona titulo e data das tarefas PENDENTES do usuário logado
+
     tarefas = (Tarefa
                .select(Tarefa.titulo, Tarefa.data)
                .where((Tarefa.user == user_id) & (Tarefa.status == 0))
-               .dicts() # Retorna resultados como dicionários Python
+               .dicts()
               )
 
     eventos = []
     for tarefa in tarefas:
+        # Garante que a data esteja no formato ISO (YYYY-MM-DD)
         eventos.append({
             "title": tarefa["titulo"],
-            # O FullCalendar usa 'start' para a data do evento
-            "start": tarefa["data"], 
+            "start": tarefa["data"],
             "allDay": True,
-            "color": "#FF5722" # Cor para eventos de tarefas pendentes
+            "color": "#FF5722"
         })
 
     return jsonify(eventos)
@@ -212,41 +211,36 @@ def dashboard():
     # Soma das saídas
     saidas = (Financa
                .select(fn.SUM(Financa.valor))
-               .where(
-                   (Financa.usuario == user_id) &
-                   (Financa.tipo == 'saida')
-               )
+               .where((Financa.usuario == user_id) & (Financa.tipo == 'saida'))
                .scalar())
 
     # Soma das entradas
     entradas = (Financa
                .select(fn.SUM(Financa.valor))
-               .where(
-                   (Financa.usuario == user_id) &
-                   (Financa.tipo == 'entrada')
-               )
+               .where((Financa.usuario == user_id) & (Financa.tipo == 'entrada'))
                .scalar())
 
-    # Garantir que nunca seja None
-    entradas = entradas or 0
-    saidas = saidas or 0
+    # Normaliza None para 0
+    entradas = float(entradas) if entradas is not None else 0.0
+    saidas = float(saidas) if saidas is not None else 0.0
 
-    # Total final
     totalGastos = entradas - saidas
 
-    # Exemplo temporário de tarefasDoDia (ajuste depois)
-    tarefasDoDia = 0  
+    # tarefasDoDia: exemplo simples contando tarefas pendentes com a data de hoje
+    hoje = datetime.now().date().isoformat()
+    tarefasDoDia = (Tarefa
+                    .select()
+                    .where((Tarefa.user == user_id) & (Tarefa.data == hoje) & (Tarefa.status == 0))
+                    .count())
 
     return render_template(
         "dashboard.html",
-        nome=session.get("nome","Usuário"),
+        nome=session.get("nome", "Usuário"),
         tg=totalGastos,
         td=tarefasDoDia,
         entradas=entradas,
         saidas=saidas
     )
-
-
 
 @app.route("/perfil")
 def perfil():
@@ -256,44 +250,40 @@ def perfil():
     user_id = session["user_id"]
     try:
         user_model = Usuario.get_by_id(user_id)
-
-        usuario = model_to_dict(user_model, fields_from_query=[Usuario.nome, Usuario.email])
         usuario = model_to_dict(user_model, only=[Usuario.nome, Usuario.email])
-
     except DoesNotExist:
         usuario = None
 
     return render_template("perfil.html", usuario=usuario)
-
 
 # ---------------- VIDA PESSOAL / TAREFAS ----------------
 @app.route("/vida-pessoal")
 def vida_pessoal():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    
+
     user_id = session["user_id"]
-    
+
     tarefas = (Tarefa
                .select()
                .where(Tarefa.user == user_id)
                .order_by(Tarefa.data.asc())
                .dicts()
               )
-    
+
     return render_template("vida_pessoal.html", tarefas=tarefas)
 
 @app.route("/add-tarefa")
 def add_tarefa():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    return render_template("tarefas.html") 
+    return render_template("tarefas.html")
 
 @app.route("/salvar-tarefa", methods=["POST"])
 def salvar_tarefa():
     if "user_id" not in session:
         return redirect(url_for("login"))
-        
+
     user_id = session["user_id"]
     titulo = request.form.get("titulo", "").strip()
     descricao = request.form.get("descricao", "").strip()
@@ -301,13 +291,13 @@ def salvar_tarefa():
     categoria = request.form.get("categoria", "").strip()
 
     Tarefa.create(
-        user=user_id, 
-        titulo=titulo, 
-        descricao=descricao, 
-        data=data, 
+        user=user_id,
+        titulo=titulo,
+        descricao=descricao,
+        data=data,
         categoria=categoria
     )
-    
+
     flash("Tarefa adicionada com sucesso!", "success")
     return redirect(url_for("vida_pessoal"))
 
@@ -315,11 +305,11 @@ def salvar_tarefa():
 def concluir_tarefa(id):
     if "user_id" not in session:
         return redirect(url_for("login"))
-        
+
     user_id = session["user_id"]
     query = Tarefa.update(status=1).where((Tarefa.id == id) & (Tarefa.user == user_id))
     query.execute()
-    
+
     flash("Tarefa concluída!", "success")
     return redirect(url_for("vida_pessoal"))
 
@@ -327,21 +317,20 @@ def concluir_tarefa(id):
 def desfazer_tarefa(id):
     if "user_id" not in session:
         return redirect(url_for("login"))
-        
+
     user_id = session["user_id"]
     query = Tarefa.update(status=0).where((Tarefa.id == id) & (Tarefa.user == user_id))
     query.execute()
-    
+
     flash("Tarefa marcada como pendente.", "warning")
     return redirect(url_for("vida_pessoal"))
 
-
 # ---------------- FINANÇAS ----------------
-@app.route("/financas", methods=["GET","POST"])
+@app.route("/financas", methods=["GET", "POST"]) 
 def financas():
     if "user_id" not in session:
         return redirect(url_for("login"))
-        
+
     user_id = session["user_id"]
 
     if request.method == "POST":
@@ -352,44 +341,44 @@ def financas():
         forma = request.form.get("forma_pagamento", "")
         parcelas = request.form.get("parcelas") or 1
         data = request.form.get("data") or ""
-        
+
         try:
             valor = float(Decimal(valor_raw))
             parcelas = int(parcelas)
         except Exception:
             flash("Valor ou parcelas inválidos.", "danger")
             return redirect(url_for("financas"))
-        
+
         Financa.create(
-            usuario=user_id, 
-            descricao=descricao, 
-            categoria=categoria, 
-            tipo=tipo, 
-            valor=valor, 
-            forma_pagamento=forma, 
-            parcelas=parcelas, 
+            usuario=user_id,
+            descricao=descricao,
+            categoria=categoria,
+            tipo=tipo,
+            valor=valor,
+            forma_pagamento=forma,
+            parcelas=parcelas,
             data=data
         )
-        
+
         flash("Registro financeiro salvo.", "success")
         return redirect(url_for("financas"))
-        
+
     registros = (Financa
                  .select()
                  .where(Financa.usuario == user_id)
                  .order_by(Financa.data.desc())
                  .dicts()
                 )
-    
+
     return render_template("financas.html", registros=registros, categorias=CATEGORIAS)
 
 @app.route("/financas/data")
 def financas_data():
     if "user_id" not in session:
-        return jsonify({"error":"unauthorized"}), 401
-        
+        return jsonify({"error": "unauthorized"}), 401
+
     user_id = session["user_id"]
-    
+
     # 1. Totais de Entrada e Saída
     totals = (Financa
               .select(Financa.tipo, fn.SUM(Financa.valor).alias('total'))
@@ -397,11 +386,11 @@ def financas_data():
               .group_by(Financa.tipo)
               .dicts()
              )
-    
-    tot_dict = {"entrada":0.0, "saida":0.0}
+
+    tot_dict = {"entrada": 0.0, "saida": 0.0}
     for row in totals:
-        tot_dict[row["tipo"]] = float(row["total"])
-            
+        tot_dict[row["tipo"]] = float(row["total"]) if row["total"] is not None else 0.0
+
     # 2. Totais por Categoria
     cat_rows = (Financa
                 .select(Financa.categoria, Financa.tipo, fn.SUM(Financa.valor).alias('total'))
@@ -409,41 +398,40 @@ def financas_data():
                 .group_by(Financa.categoria, Financa.tipo)
                 .dicts()
                )
-    
+
     cat_map = {}
     for c in CATEGORIAS:
         cat_map[c["key"]] = {"label": c["label"], "color": c["color"], "total": 0.0}
-        
+
     for r in cat_rows:
-        key = r["categoria"]
+        key = r["categoria"] or "outras"
         if key not in cat_map:
-            cat_map[key] = {"label": key, "color":"#999999", "total":0.0}
-        
-        valor_total = float(r["total"])
+            cat_map[key] = {"label": key, "color": "#999999", "total": 0.0}
+
+        valor_total = float(r["total"]) if r["total"] is not None else 0.0
 
         if r["tipo"] == "entrada":
             cat_map[key]["total"] += valor_total
         else:
             cat_map[key]["total"] -= valor_total
-            
+
     labels, values, colors = [], [], []
-    for k,v in cat_map.items():
+    for k, v in cat_map.items():
         if abs(v["total"]) > 0:
             labels.append(v["label"])
-            values.append(round(v["total"],2))
+            values.append(round(v["total"], 2))
             colors.append(v["color"])
 
     return jsonify({"totais": tot_dict, "por_categoria": {"labels": labels, "values": values, "colors": colors}})
 
-
-@app.route("/recuperar-senha", methods=["GET","POST"])
+@app.route("/recuperar-senha", methods=["GET", "POST"])
 def recuperar_senha():
     if request.method == "POST":
         email = request.form.get("email")
         flash(f"Se {email} estiver cadastrado, enviaremos instruções por e-mail (simulado).", "info")
         return redirect(url_for("login"))
     return render_template("recuperar_senha.html")
-    
+
 @app.route("/editar_perfil", methods=["GET", "POST"])
 def editar_perfil():
     if "user_id" not in session:
@@ -458,7 +446,7 @@ def editar_perfil():
         query = Usuario.update(nome=nome, email=email).where(Usuario.id == user_id)
         query.execute()
 
-        session["nome"] = nome 
+        session["nome"] = nome
         flash("Perfil atualizado com sucesso!", "success")
         return redirect(url_for("perfil"))
 
@@ -473,5 +461,4 @@ def editar_perfil():
 # Correção final da execução Flask com 'port' como inteiro
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=True, host='0.0.0.0',port=port)
-    
+    app.run(debug=True, host='0.0.0.0', port=port)

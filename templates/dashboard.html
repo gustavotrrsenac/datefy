@@ -7,7 +7,6 @@
   <title>DateFY</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" href="static/css/style.css">
   <link rel="icon" href="/static/imagens/PHOTO-2025-10-30-23-41-32.jpg">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 </head>
@@ -31,30 +30,27 @@
 
     <!-- Painel dos cards -->
     <section class="cards-dashboard">
+
       <div class="card-box">
         <h3>Tarefas do dia</h3>
-<<<<<<< HEAD
-        <p id="dash-tarefas">0</p>
-      </div>  
-=======
-        <p id="dash-tarefas"> {{td}}</p>
+        <p id="dash-tarefas">{{ td }}</p>
       </div>
->>>>>>> d2238f734503b509d97e8595045b094460aad966
 
       <div class="card-box entrada">
         <h3>Entradas</h3>
-        <p id="dash-entradas">R$ {{entradas}}</p>
+        <p id="dash-entradas">R$ {{ entradas }}</p>
       </div>
 
       <div class="card-box saida">
         <h3>Saídas</h3>
-        <p id="dash-saidas">R$ {{saidas}}</p>
+        <p id="dash-saidas">R$ {{ saidas }}</p>
       </div>
 
       <div class="card-box total">
         <h3>Total</h3>
-        <p id="dash-total">R$ {{tg}}</p>
+        <p id="dash-total">R$ {{ tg }}</p>
       </div>
+
     </section>
 
     <!-- CALENDÁRIO -->
@@ -69,16 +65,13 @@
 
       <!-- INPUT DE EVENTOS EM JSON -->
       <input type="text" id="eventosInput" value='[
-      {"title":"Pagamento","start":"2025-02-10"},
-      {"title":"Reunião","start":"2025-02-15"}
+        {"title":"Pagamento","start":"2025-02-10"},
+        {"title":"Reunião","start":"2025-02-15"}
       ]' hidden>
 
     </section>
-    
 
-    
-
-    <!-- LEMBRETES  -->
+    <!-- LEMBRETES -->
     <section class="painel-info" style="margin-top:18px;">
       <h3>Lembretes</h3>
     
@@ -116,6 +109,7 @@
       </table>
     </section>
 
+    <!-- SUAS TAREFAS RECENTES -->
     <section class="bloco-dashboard">
       <h2>📝 Suas Tarefas Recentes</h2>
     
@@ -133,7 +127,6 @@
         <p>Nenhuma tarefa cadastrada ainda.</p>
       {% endif %}
     </section>
-    
 
   </main>
 
@@ -149,14 +142,8 @@
         locale: 'pt-br',
         height: 'auto',
 
-<<<<<<< HEAD
-        /* ROTA CORRETA */
+        /* ROTA CORRETA para os eventos de tarefas */
         events: "{{ url_for('api_tarefas') }}",
-=======
-        
-        /* EVENTOS */
-        events: '/api/tarefas',
->>>>>>> d2238f734503b509d97e8595045b094460aad966
 
         eventDisplay: "list-item",
 
@@ -206,20 +193,34 @@
 
       calendar.render();
 
-      fetch('/financas/data').then(r => r.json()).then(data => {
-        if (data && data.totais) {
-          document.getElementById('dash-entradas').textContent = "R$ " + (data.totais.entrada||0).toFixed(2);
-          document.getElementById('dash-saidas').textContent = "R$ " + (data.totais.saida||0).toFixed(2);
-          const total = (data.totais.entrada||0) - (data.totais.saida||0);
-          document.getElementById('dash-total').textContent = "R$ " + total.toFixed(2);
-        }
-      }).catch(()=>{});
+      /* CARDS FINANCEIROS */
+      fetch('/financas/data')
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.totais) {
+            document.getElementById('dash-entradas').textContent =
+              "R$ " + (data.totais.entrada || 0).toFixed(2);
+            document.getElementById('dash-saidas').textContent =
+              "R$ " + (data.totais.saida || 0).toFixed(2);
+            const total = (data.totais.entrada || 0) - (data.totais.saida || 0);
+            document.getElementById('dash-total').textContent =
+              "R$ " + total.toFixed(2);
+          }
+        });
 
-      fetch('/eventos-json').then(r => r.json()).then(list => {
-        const hoje = new Date().toISOString().split('T')[0];
-        const tarefasHoje = list.filter(ev => ev.title && ev.title.startsWith("Tarefa:") && ev.start && ev.start.startsWith(hoje));
-        document.getElementById('dash-tarefas').textContent = tarefasHoje.length;
-      }).catch(()=>{});
+      /* TAREFAS DO DIA */
+      fetch('/eventos-json')
+        .then(r => r.json())
+        .then(list => {
+          const hoje = new Date().toISOString().split('T')[0];
+          const tarefasHoje = list.filter(ev =>
+            ev.title &&
+            ev.title.startsWith("Tarefa:") &&
+            ev.start &&
+            ev.start.startsWith(hoje)
+          );
+          document.getElementById('dash-tarefas').textContent = tarefasHoje.length;
+        });
 
     });
   </script>
