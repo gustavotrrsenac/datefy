@@ -18,7 +18,7 @@ bcrypt = Bcrypt(app)
 MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
 MYSQL_USER = os.getenv("MYSQL_USER", "root")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "senac")
-MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy_db") 
+MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy") 
 
 # Configuração do banco de dados Peewee (MySQL)
 # Este objeto 'db' gerencia a conexão com o MySQL
