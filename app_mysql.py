@@ -112,7 +112,7 @@ CATEGORIAS = [
 @app.route("/")
 def index():
     return redirect(url_for("login"))
-
+ 
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -206,7 +206,9 @@ def api_tarefas():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    return render_template("dashboard.html", nome=session.get("nome","Usuário"))
+    totalGastos = 29; tarefasDoDia = 29; entradas = 29; saidas = 29;  
+    return render_template("dashboard.html", nome=session.get("nome","Usuário"), tg=totalGastos, td=tarefasDoDia, entradas=entradas, saidas=saidas)
+
 
 @app.route("/perfil")
 def perfil():
@@ -216,7 +218,10 @@ def perfil():
     user_id = session["user_id"]
     try:
         user_model = Usuario.get_by_id(user_id)
+
+        usuario = model_to_dict(user_model, fields_from_query=[Usuario.nome, Usuario.email])
         usuario = model_to_dict(user_model, only=[Usuario.nome, Usuario.email])
+
     except DoesNotExist:
         usuario = None
 
@@ -431,3 +436,4 @@ def editar_perfil():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0',port=port)
+    
