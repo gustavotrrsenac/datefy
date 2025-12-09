@@ -1,0 +1,7 @@
+# Comando: pip install -r requirements.txt
+Flask
+peewee
+Flask-Bcrypt
+itsdangerous 
+python-dotenv
+Flask-Login
