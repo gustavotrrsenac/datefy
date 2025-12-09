@@ -468,6 +468,30 @@ def api_tarefas():
 
     return jsonify(eventos)
 
+@app.route("/excluir_tarefa/<int:id>")
+def excluir_tarefa(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM tarefas WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    flash("Tarefa excluída com sucesso!", "success")
+    return redirect(url_for("vida_pessoal"))
+
+
+@app.route("/apagar/<int:id>", methods=["POST"])
+def apagar_registro(id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM financas WHERE id = ?", (id,))
+    conn.commit()
+
+    conn.close()
+    flash("Registro apagado com sucesso!", "success")
+
+    return redirect(url_for("financas"))
+
 
 # ----------------- RECUPERAR SENHA -----------------
 @app.route("/recuperar-senha")
