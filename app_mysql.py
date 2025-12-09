@@ -206,25 +206,46 @@ def api_tarefas():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    totalGastos = 29; tarefasDoDia = 29; entradas = 29; 
+
+    user_id = session["user_id"]
+
+    # Soma das saídas
     saidas = (Financa
                .select(fn.SUM(Financa.valor))
                .where(
-                   (Financa.usuario_id == 1) &
+                   (Financa.usuario == user_id) &
                    (Financa.tipo == 'saida')
                )
                .scalar())
+
+    # Soma das entradas
     entradas = (Financa
                .select(fn.SUM(Financa.valor))
                .where(
-                   (Financa.usuario_id == 1) &
+                   (Financa.usuario == user_id) &
                    (Financa.tipo == 'entrada')
                )
                .scalar())
+
+    # Garantir que nunca seja None
+    entradas = entradas or 0
+    saidas = saidas or 0
+
+    # Total final
     totalGastos = entradas - saidas
 
-    
-    return render_template("dashboard.html", nome=session.get("nome","Usuário"), tg=totalGastos, td=tarefasDoDia, entradas=entradas, saidas=saidas)
+    # Exemplo temporário de tarefasDoDia (ajuste depois)
+    tarefasDoDia = 0  
+
+    return render_template(
+        "dashboard.html",
+        nome=session.get("nome","Usuário"),
+        tg=totalGastos,
+        td=tarefasDoDia,
+        entradas=entradas,
+        saidas=saidas
+    )
+
 
 
 @app.route("/perfil")
