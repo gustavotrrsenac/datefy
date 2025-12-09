@@ -220,7 +220,6 @@ def perfil():
         user_model = Usuario.get_by_id(user_id)
 
         usuario = model_to_dict(user_model, fields_from_query=[Usuario.nome, Usuario.email])
-        
         usuario = model_to_dict(user_model, only=[Usuario.nome, Usuario.email])
 
     except DoesNotExist:
