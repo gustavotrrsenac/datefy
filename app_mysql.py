@@ -18,7 +18,7 @@ bcrypt = Bcrypt(app)
 MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
 MYSQL_USER = os.getenv("MYSQL_USER", "root")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "senac")
-MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy") 
+MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy_db") 
 
 # Configuração do banco de dados Peewee (MySQL)
 # Este objeto 'db' gerencia a conexão com o MySQL
@@ -206,7 +206,24 @@ def api_tarefas():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    totalGastos = 29; tarefasDoDia = 29; entradas = 29; saidas = 29;  
+    totalGastos = 29; tarefasDoDia = 29; entradas = 29; 
+    saidas = (Financa
+               .select(fn.SUM(Financa.valor))
+               .where(
+                   (Financa.usuario_id == 1) &
+                   (Financa.tipo == 'saida')
+               )
+               .scalar())
+    entradas = (Financa
+               .select(fn.SUM(Financa.valor))
+               .where(
+                   (Financa.usuario_id == 1) &
+                   (Financa.tipo == 'entrada')
+               )
+               .scalar())
+    totalGastos = entradas - saidas
+
+    
     return render_template("dashboard.html", nome=session.get("nome","Usuário"), tg=totalGastos, td=tarefasDoDia, entradas=entradas, saidas=saidas)
 
 
