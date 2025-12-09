@@ -154,6 +154,58 @@ body.tela-interna { display:flex; min-height:100vh; }
   .card-box { width:100%; max-width:320px; }
 }
 
+<<<<<<< HEAD
+/* ===== PERFIL ===== */
+.perfil-box {
+  background-color: #234c6a;
+  color: #dbe9f1;
+  padding: 30px;
+  border-radius: 15px;
+  width: 380px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  text-align: center;
+  margin-top: 50px;
+}
+
+.foto-perfil img {
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  border: 3px solid #00aeef;
+  margin-bottom: 15px;
+}
+
+.dados-perfil p {
+  font-size: 1rem;
+  margin: 8px 0;
+}
+
+.btn-editar {
+  display: inline-block;
+  margin-top: 20px;
+  background-color: #00aeef;
+  color: white;
+  padding: 10px 25px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn-editar:hover {
+  background-color: white;
+  color: #1b3c53;
+}
+/* ============================
+       ESTILOS DO CALENDÁRIO 
+       ============================ */
+
+
+
+=======
+>>>>>>> d2238f734503b509d97e8595045b094460aad966
     #calendario {
       background: #0f172a;
       padding: 30px;
@@ -371,6 +423,19 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-decoration: underline;
 }
 
+<<<<<<< HEAD
+/* CONTAINER */
+.perfil-container {
+  background-color: #234C6A;
+  padding: 40px;
+  width: 500px;
+  margin: 50px auto;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  color: #DBE9F1;
+  text-align: center;
+}
+=======
 /* --------- ÁREA DO PERFIL ---------- */
 
 /* container principal */
@@ -547,4 +612,132 @@ body.tela-interna { display:flex; min-height:100vh; }
 
 
 
+>>>>>>> d2238f734503b509d97e8595045b094460aad966
 
+/* FOTO ATUAL */
+.foto-perfil-editar img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 4px solid #00AEEF;
+  box-shadow: 0 0 10px rgba(0,174,239,0.5);
+  margin-bottom: 15px;
+}
+
+/* FORMULÁRIO */
+.form-perfil {
+  text-align: left;
+}
+
+.campo-form {
+  margin-bottom: 20px;
+}
+
+.campo-form label {
+  display: block;
+  margin-bottom: 6px;
+  color: #DBE9F1;
+  font-size: .95rem;
+}
+
+.campo-form input,
+.campo-form textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #456882;
+  background: #1B3C53;
+  color: #DBE9F1;
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .3s;
+}
+
+textarea {
+  resize: none;
+}
+
+.campo-form input:focus,
+.campo-form textarea:focus {
+  border-color: #00AEEF;
+}
+
+/* BOTÃO SALVAR */
+.btn-salvar {
+  width: 100%;
+  padding: 14px;
+  background-color: #00AEEF;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.btn-salvar:hover {
+  background-color: white;
+  color: #1B3C53;
+}
+
+/* BOTÃO VOLTAR */
+.btn-voltar {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  background-color: transparent;
+  color: #DBE9F1;
+  border: 2px solid #00AEEF;
+  transition: 0.3s;
+}
+
+.btn-voltar:hover {
+  background-color: #00AEEF;
+  color: white;
+}
+
+
+
+
+/* Cor dos marcadores pequenos */
+.fc-daygrid-event-dot {
+  border-color: #1B3C53 !important;
+}
+
+/* Evento — conta */
+.evento-conta {
+  background-color: #e9a33a !important;
+  border-color: #e9a33a !important;
+}
+
+/* Evento — reunião */
+.evento-reuniao {
+  background-color: #4a7ae3 !important;
+  border-color: #4a7ae3 !important;
+}
+
+/* Texto compacto */
+.fc-event-title {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+    /* pequenas adaptações para mostrar eventos como "dots" e título pequeno */
+.tarefa-evento {
+  background-color: #1B3C53 !important;
+  border-color: #1B3C53 !important;
+  color: white !important;
+  font-size: 10px;
+}
+
+.fc-event-title {
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+#eventos-dia { display: none; margin-top:10px; }
+#eventos-dia ul { padding-left: 18px; }
