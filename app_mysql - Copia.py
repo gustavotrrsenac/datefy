@@ -8,7 +8,7 @@ from decimal import Decimal
 from datetime import datetime
 # ------------------------------
 
-app = Flask(__name__) # CORREÇÃO: Alterado 'name' para 'name_'
+app = Flask(__name__) 
 # A chave secreta é usada para sessões.
 app.secret_key = os.getenv("SECRET_KEY", "minha_chave_segura")
 bcrypt = Bcrypt(app)
@@ -460,8 +460,8 @@ def salvar_preferencias():
 
     # Alterar senha se os campos estiverem preenchidos corretamente 
     if senha_atual and nova_senha and nova_senha == confirmar:
-        if check_password(user.senha, senha_atual):
-            user.senha = generate_password(nova_senha)
+        if bcrypt.check_password_hash(user.senha_hash, senha_atual):
+            user.senha_hash = bcrypt.generate_password_hash(nova_senha).decode("utf-8")
 
     user.save()
 

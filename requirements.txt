@@ -5,3 +5,4 @@ Flask-Bcrypt
 itsdangerous 
 python-dotenv
 Flask-Login
+cryptography
