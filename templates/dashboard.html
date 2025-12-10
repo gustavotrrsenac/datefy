@@ -70,25 +70,6 @@
       ]' hidden>
     </section>
 
-    <!-- SUAS TAREFAS RECENTES -->
-    <section class="bloco-dashboard">
-      <h2>📝 Suas Tarefas Recentes</h2>
-    
-      {% if tarefas %}
-        <ul class="lista-dashboard">
-          {% for t in tarefas %}
-            <li class="item-tarefa {% if t['status'] == 1 %}concluida{% endif %}">
-              <strong>{{ t['titulo'] }}</strong>
-              <small>{{ t['data'] }}</small>
-              <span class="categoria">{{ t['categoria'] or 'Geral' }}</span>
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>Nenhuma tarefa cadastrada ainda.</p>
-      {% endif %}
-    </section>
-
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
