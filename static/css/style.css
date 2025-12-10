@@ -154,7 +154,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   .card-box { width:100%; max-width:320px; }
 }
 
-<<<<<<< HEAD
 /* ===== PERFIL ===== */
 .perfil-box {
   background-color: #234c6a;
@@ -204,8 +203,6 @@ body.tela-interna { display:flex; min-height:100vh; }
 
 
 
-=======
->>>>>>> d2238f734503b509d97e8595045b094460aad966
     #calendario {
       background: #0f172a;
       padding: 30px;
@@ -423,7 +420,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-decoration: underline;
 }
 
-<<<<<<< HEAD
 /* CONTAINER */
 .perfil-container {
   background-color: #234C6A;
@@ -435,11 +431,10 @@ body.tela-interna { display:flex; min-height:100vh; }
   color: #DBE9F1;
   text-align: center;
 }
-=======
 /* --------- ÁREA DO PERFIL ---------- */
 
 /* ---- CONTAS BANCARIAS ---- */
-<style>
+
 .contas-list {
   display: flex;
   flex-direction: column;
@@ -474,10 +469,10 @@ body.tela-interna { display:flex; min-height:100vh; }
   background-color: #456882;
   color: white;
 }
-</style>
+
 
 /* ---- PAGINA + IMAGEM + DESCRIÇÃO ---- */
-<style>
+
 /* container principal */
 .perfil-container {
   margin-left: 270px;
@@ -625,7 +620,7 @@ body.tela-interna { display:flex; min-height:100vh; }
 .btn-principal:hover {
   background: #5a82a2;
 }
-</style>
+
 
 /* ---- SWITCHES DE NOTIFICAÇÕES ---- */
 .switch-group {
@@ -715,7 +710,6 @@ input:checked + .slider:before {
 
 
 
->>>>>>> d2238f734503b509d97e8595045b094460aad966
 
 /* FOTO ATUAL */
 .foto-perfil-editar img {
