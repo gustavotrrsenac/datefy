@@ -486,6 +486,42 @@ def excluir_tarefa(id):
 
     return redirect(url_for("vida_pessoal"))
 
+# ---------------- TESTE NOTICAÇÕES ----------------
+@app.route("/salvar_preferencias", methods=["POST"])
+def salvar_preferencias():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+    user = Usuario.get_or_none(Usuario.id == user_id)
+
+    if not user:
+        flash("Usuário não encontrado.", "error")
+        return redirect(url_for("perfil"))
+
+    # DADOS PESSOAIS
+    user.nome = request.form.get("nome")
+    user.email = request.form.get("email")
+
+    # NOTIFICAÇÕES
+    user.notif_email = "email_alertas" in request.form
+    user.notif_push = "push_alertas" in request.form
+    user.notif_relatorio = "mensal_relatorio" in request.form
+
+    # SENHAS
+    senha_atual = request.form.get("senha_atual")
+    nova_senha = request.form.get("nova_senha")
+    confirmar = request.form.get("confirmar_senha")
+
+    # Alterar senha se os campos estiverem preenchidos corretamente 
+    if senha_atual and nova_senha and nova_senha == confirmar:
+        if check_password(user.senha, senha_atual):
+            user.senha = generate_password(nova_senha)
+
+    user.save()
+
+    flash("Preferências e perfil atualizados!", "success")
+    return redirect(url_for("perfil"))
 
 # Correção final da execução Flask com 'port' como inteiro
 if __name__ == '__main__':
