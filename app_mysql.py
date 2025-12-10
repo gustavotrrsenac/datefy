@@ -458,6 +458,35 @@ def editar_perfil():
 
     return render_template("editar_perfil.html", usuario=usuario)
 
+# ----------------- APAGAR FINANCA -----------------
+@app.route("/apagar/<int:id>", methods=["POST"])
+def apagar_registro(id):
+    try:
+        # Tenta apagar o registro pelo ID
+        query = Financa.delete().where(Financa.id == id)
+        query.execute()
+
+        flash("Registro apagado com sucesso!", "success")
+
+    except Exception as e:
+        flash(f"Erro ao apagar o registro: {e}", "danger")
+
+    return redirect(url_for("financas"))
+
+
+# ----------------- APAGAR TAREFAS -----------------
+
+@app.route("/excluir_tarefa/<int:id>")
+def excluir_tarefa(id):
+    try:
+        Tarefa.delete().where(Tarefa.id == id).execute()
+        flash("Tarefa excluída com sucesso!", "success")
+    except Exception as e:
+        flash(f"Erro ao excluir a tarefa: {e}", "danger")
+
+    return redirect(url_for("vida_pessoal"))
+
+
 # Correção final da execução Flask com 'port' como inteiro
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
