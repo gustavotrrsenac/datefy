@@ -420,17 +420,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-decoration: underline;
 }
 
-/* CONTAINER */
-.perfil-container {
-  background-color: #234C6A;
-  padding: 40px;
-  width: 500px;
-  margin: 50px auto;
-  border-radius: 18px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-  color: #DBE9F1;
-  text-align: center;
-}
 /* --------- ÁREA DO PERFIL ---------- */
 
 /* ---- CONTAS BANCARIAS ---- */
