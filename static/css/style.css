@@ -827,3 +827,30 @@ textarea {
 
 #eventos-dia { display: none; margin-top:10px; }
 #eventos-dia ul { padding-left: 18px; }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #132d42;
+  padding: 22px;
+  border-radius: 10px;
+  width: 380px;
+  color: white;
+}
+
+.modal-close {
+  float: right;
+  cursor: pointer;
+  font-size: 22px;
+}
