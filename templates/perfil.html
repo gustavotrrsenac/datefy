@@ -35,15 +35,19 @@
   <div class="perfil-box">
 
     <div class="perfil-usuario">
-      <img src="{{ url_for('static', filename='img/avatar.png') }}">
-      </div>
+      <img 
+      src="https://i.pinimg.com/1200x/14/f0/4f/14f04fb3a560860dce0010f10d5c943a.jpg"
+      alt="Avatar"
+      style="width:140px; height:140px; border-radius:50%; object-fit:cover;"
+      >
+    </div>
 
 
-      <div class="perfil-topo">
-        <h2>{{ usuario.nome }}</h2>
-        <p>Gerencie suas informações e configurações</p>
-      </div>
-    </div> 
+    <div class="perfil-topo">
+      <h2>{{ usuario.nome }}</h2>
+      <p>Gerencie suas informações e configurações</p>
+    </div>
+  </div> 
 
     <div style="display:flex; gap:20px; margin-top:20px;">
 
