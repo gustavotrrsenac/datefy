@@ -35,9 +35,9 @@
   <div class="perfil-box">
 
     <div class="perfil-usuario">
-        <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="Foto do usuário">
-        <a href="{{ url_for('editar_perfil') }}" class="btn-editar-foto">✎</a>
-        </div>
+      <img src="{{ url_for('static', filename='img/avatar.png') }}">
+      </div>
+
 
       <div class="perfil-topo">
         <h2>{{ usuario.nome }}</h2>
@@ -59,77 +59,110 @@
       <div class="perfil-content">
 
         <!-- DADOS PESSOAIS -->
+        <form method="POST" action="{{ url_for('salvar_preferencias') }}">
+
         <div x-show="aba === 'pessoais'">
           <h3 style="margin-bottom:18px;">Dados Pessoais</h3>
 
-          <form method="POST" action="{{ url_for('editar_perfil') }}">
+          <div class="form-group">
+            <label>Nome completo</label>
+            <input class="form-input" name="nome" value="{{ usuario.nome }}">
+          </div>
 
-            <div class="form-group">
-              <label>Nome completo</label>
-              <input class="form-input" name="nome" value="{{ usuario.nome }}">
-            </div>
-
-            <div class="form-group">
-              <label>E-mail</label>
-              <input class="form-input" name="email" value="{{ usuario.email }}">
-            </div>
-
-            <button class="btn-principal">Salvar Alterações</button>
-          </form>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input class="form-input" name="email" value="{{ usuario.email }}">
+          </div>
         </div>
 
         <!-- SEGURANÇA -->
         <div x-show="aba === 'seguranca'">
           <h3 style="margin-bottom:18px;">Segurança</h3>
 
-          <form method="POST" action="{{ url_for('recuperar_senha') }}">
-            <div class="form-group">
-              <label>Senha Atual</label>
-              <input type="password" class="form-input" name="senha_atual">
-            </div>
+          <div class="form-group">
+            <label>Senha Atual</label>
+            <input type="password" class="form-input" name="senha_atual">
+          </div>
 
-            <div class="form-group">
-              <label>Nova Senha</label>
-              <input type="password" class="form-input" name="nova_senha">
-            </div>
+          <div class="form-group">
+            <label>Nova Senha</label>
+            <input type="password" class="form-input" name="nova_senha">
+          </div>
 
-            <div class="form-group">
-              <label>Confirmar Nova Senha</label>
-              <input type="password" class="form-input" name="confirmar_senha">
-            </div>
+          <div class="form-group">
+            <label>Confirmar Nova Senha</label>
+            <input type="password" class="form-input" name="confirmar_senha">
+          </div>
 
-            <button class="btn-principal">Alterar Senha</button>
-          </form>
         </div>
 
         <!-- CONTAS BANCÁRIAS -->
         <div x-show="aba === 'contas'">
-          <h3 style="margin-bottom:18px;">Contas Bancárias</h3>
+          <h3>Minhas Contas Bancárias</h3>
 
-          {% for conta in contas %}
-            <div style="background:#1B3C53;padding:14px;border-radius:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-              <div>
+          {% if usuario.contas %}
+            {% for conta in usuario.contas %}
+              <div class="conta-card">
                 <strong>{{ conta.banco }}</strong><br>
-                <span style="color:#cbd8e4;font-size:13px;">
-                  Agência: {{ conta.agencia }} — Conta: {{ conta.numero }}
-                </span>
+                Agência: {{ conta.agencia }} - Conta: {{ conta.numero }}
+                <input type="hidden" name="conta_id_{{ loop.index }}" value="{{ conta.id }}">
+                <input class="form-input" name="conta_banco_{{ loop.index }}" value="{{ conta.banco }}">
+                <input class="form-input" name="conta_agencia_{{ loop.index }}" value="{{ conta.agencia }}">
+                <input class="form-input" name="conta_numero_{{ loop.index }}" value="{{ conta.numero }}">
               </div>
-              <span style="font-size:20px;color:white;">⋮</span>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          {% else %}
+              <p>Nenhuma conta cadastrada.</p>
+          {% endif %}
 
-          <a href="{{ url_for('criar_conta') }}"
-             style="display:flex;justify-content:center;align-items:center;border:2px dashed #456882;padding:12px;border-radius:10px;color:#cbd8e4;cursor:pointer;">
+          <a href="{{ url_for('criar_conta') }}" class="btn-nova-conta">
             ➕ Vincular Nova Conta
           </a>
         </div>
+        
+        <!-- NOTIFICAÇÕES -->
+        <div x-show="aba === 'notificacoes'">
+          <h3 style="margin-bottom:18px;">Notificações</h3>
 
-      </div>
+          <form action="/salvar_notificacoes" method="POST">
+
+            <div class="switch-group">
+              <label class="switch">
+                  <input type="checkbox" name="email_alertas"
+                        {% if usuario.notif_email %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+              <span class="switch-text">  Email sobre alertas financeiros</span>
+            </div>
+
+            <div class="switch-group">
+              <label class="switch">
+                  <input type="checkbox" name="push_alertas"
+                        {% if usuario.notif_push %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+              <span class="switch-text">  Notificações Push de tarefas
+              </span>
+            </div>
+
+            <div class="switch-group">
+              <label class="switch">
+                  <input type="checkbox" name="mensal_relatorio"
+                        {% if usuario.notif_relatorio %}checked{% endif %}>
+                  <span class="slider round"></span>
+              </label>
+              <span class="switch-text">  Relatório mensal automático</span>
+            </div>
+
+            </div>
+              <button type="submit" class="btn-principal" style="margin-top: 20px;">
+                Salvar Preferências
+              </button>
+          </form>
+        </div>
+      </div>  
 
     </div>
 
   </div>
 </main>
-
-</body>
-</html>
