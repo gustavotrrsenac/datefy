@@ -25,6 +25,11 @@
     <section class="painel-info">
       <h3>Registrar nova transação</h3>
       <form method="POST" class="form-financa" style="display:flex;flex-direction:column;gap:10px;max-width:720px;">
+        <!-- Se usar Flask-WTF/CSRFProtect, mantenha o token: -->
+        {% if csrf_token %}
+          {{ csrf_token() }}
+        {% endif %}
+
         <input name="descricao" placeholder="Descrição (ex: Conta de luz)" />
         <select name="categoria" required>
           <option value="">Categoria</option>
@@ -74,7 +79,7 @@
       <h3>Últimos lançamentos</h3>
       <table style="width:100%;border-collapse:collapse;">
         <thead style="text-align:left;color:#cbd8e4;">
-          <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th></tr>
+          <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Ações</th></tr>
         </thead>
         <tbody style="color:white;">
           {% for r in registros %}
@@ -85,13 +90,21 @@
               <td>{{ r['tipo'] }}</td>
               <td>R$ {{ "%.2f"|format(r['valor']) }}</td>
               <td>
-                  <form action="/apagar/{{ r['id'] }}" method="POST" style="margin:0;">
-                  <button type="submit" style="background-color:#132d42;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">excluir</button>
-                  </form>
-                </td>
+                <!-- usa url_for, confirmação JS e token CSRF se necessário -->
+                <form action="{{ url_for('apagar_registro', id=r['id']) }}" method="POST" style="margin:0;display:inline;">
+                  {% if csrf_token %}
+                    {{ csrf_token() }}
+                  {% endif %}
+                  <button type="submit"
+                          onclick="return confirm('Deseja realmente excluir este registro?')"
+                          style="background-color:#132d42;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">
+                    excluir
+                  </button>
+                </form>
+              </td>
             </tr>
           {% else %}
-            <tr><td colspan="5">Nenhum registro ainda.</td></tr>
+            <tr><td colspan="6">Nenhum registro ainda.</td></tr>
           {% endfor %}
         </tbody>
       </table>

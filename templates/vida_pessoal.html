@@ -29,16 +29,24 @@
       {% for t in tarefas %}
       <li class="tarefa {% if t['status'] == 1 %}concluida{% endif %}">
         <div>
-          <strong>{{ t['titulo'] }}</strong> — <span class="categoria">{{ t['categoria'] or 'Geral' }}</span><br>
+          <strong>{{ t['titulo'] }}</strong> — 
+          <span class="categoria">{{ t['categoria'] or 'Geral' }}</span><br>
           <small>{{ t['data'] }}</small>
         </div>
+
         <div>
           {% if t['status'] == 0 %}
             <a href="{{ url_for('concluir_tarefa', id=t['id']) }}" class="btn-ok">✔️</a>
           {% else %}
             <a href="{{ url_for('desfazer_tarefa', id=t['id']) }}" class="btn-voltar">↩️</a>
           {% endif %}
+
+          <!-- 🔥 Botão de excluir adicionado -->
+          <a href="{{ url_for('excluir_tarefa', id=t['id']) }}" 
+             class="btn-del"
+             onclick="return confirm('Tem certeza que deseja excluir esta tarefa?')">🗑️</a>
         </div>
+
       </li>
       {% endfor %}
     </ul>

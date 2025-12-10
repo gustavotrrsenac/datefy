@@ -7,6 +7,7 @@
   <title>DateFY</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="/static/imagens/PHOTO-2025-10-30-23-41-32.jpg">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 </head>
 
@@ -26,29 +27,30 @@
   <main>
 
     <h1 class="titulo-pagina">Olá, {{ nome }} </h1>
-    <p class="descricao-texto">Aqui está seu dashboard atualizado.</p>
 
     <!-- Painel dos cards -->
     <section class="cards-dashboard">
+
       <div class="card-box">
         <h3>Tarefas do dia</h3>
-        <p id="dash-tarefas">0</p>
+        <p id="dash-tarefas">{{ td }}</p>
       </div>
 
       <div class="card-box entrada">
         <h3>Entradas</h3>
-        <p id="dash-entradas">R$ 0,00</p>
+        <p id="dash-entradas">R$ {{ entradas }}</p>
       </div>
 
       <div class="card-box saida">
         <h3>Saídas</h3>
-        <p id="dash-saidas">R$ 0,00</p>
+        <p id="dash-saidas">R$ {{ saidas }}</p>
       </div>
 
       <div class="card-box total">
         <h3>Total</h3>
-        <p id="dash-total">R$ 0,00</p>
+        <p id="dash-total">R$ {{ tg }}</p>
       </div>
+
     </section>
 
     <!-- CALENDÁRIO -->
@@ -60,91 +62,110 @@
         <h4>Eventos do Dia</h4>
         <ul id="lista-eventos"></ul>
       </div>
-    </section>
 
-    <!-- LEMBRETES  -->
-    <section class="painel-info" style="margin-top:18px;">
-      <h3>Lembretes</h3>
-
-      <table class="tabela-lembretes">
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Descrição</th>
-            <th>Data</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>Conta</td>
-            <td>Pagar luz</td>
-            <td>05/12/2025 - 09:00</td>
-            <td>🟨</td>
-          </tr>
-
-          <tr>
-            <td>Entrada</td>
-            <td>Salário</td>
-            <td>01/12/2025</td>
-            <td>🟩</td>
-          </tr>
-
-          <tr>
-            <td>Evento</td>
-            <td>Reunião equipe</td>
-            <td>03/12/2025 - 14:00</td>
-            <td>🟦</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- INPUT DE EVENTOS EM JSON -->
+      <input type="text" id="eventosInput" value='[
+        {"title":"Pagamento","start":"2025-02-10"},
+        {"title":"Reunião","start":"2025-02-15"}
+      ]' hidden>
     </section>
 
   </main>
 
-  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-      var calendarEl = document.getElementById('calendar');
+      const calendarEl = document.getElementById('calendar');
 
-      var calendar = new FullCalendar.Calendar(calendarEl, {
+      const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'pt-br',
         height: 'auto',
 
-        
-        /* EVENTOS */
-        /* events: '{ ,,{ url_for("api_tarefas") }..}', */
+        /* ROTA CORRETA para os eventos de tarefas */
+        events: "{{ url_for('api_tarefas') }}",
 
-        dateClick: function (info) {
-          var eventos = calendar.getEvents().filter(ev => ev.startStr === info.dateStr);
-          var lista = document.getElementById("lista-eventos");
+        eventDisplay: "list-item",
+
+        dateClick: function(info) {
+          const dataFormatada = info.dateStr.split("T")[0];
+
+          const eventosDoDia = calendar.getEvents().filter(ev => {
+            return ev.startStr && ev.startStr.startsWith(dataFormatada);
+          });
+
+          const lista = document.getElementById("lista-eventos");
           lista.innerHTML = "";
 
-          if (eventos.length === 0) {
+          if (eventosDoDia.length === 0) {
             lista.innerHTML = "<li>Nenhum evento neste dia.</li>";
           } else {
-            eventos.forEach(ev => {
-              var li = document.createElement("li");
+            eventosDoDia.forEach(ev => {
+              const li = document.createElement("li");
               li.textContent = ev.title;
               lista.appendChild(li);
             });
           }
 
           document.getElementById("eventos-dia").style.display = "block";
+        },
+
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          const ev = info.event;
+          const detalhes = [
+            "Título: " + ev.title,
+            ev.extendedProps.tipo ? ("Tipo: " + ev.extendedProps.tipo) : null,
+            ev.start ? ("Data: " + ev.start.toISOString().split("T")[0]) : null
+          ].filter(Boolean).join(" — ");
+
+          alert(detalhes);
+        },
+
+        eventClassNames: function(arg) {
+          if (arg.event.title && arg.event.title.startsWith("Tarefa:")) {
+            return ['tarefa-evento'];
+          }
+          return [];
         }
+
       });
 
       calendar.render();
 
-    });
+      /* CARDS FINANCEIROS */
+      fetch('/financas/data')
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.totais) {
+            document.getElementById('dash-entradas').textContent =
+              "R$ " + (data.totais.entrada || 0).toFixed(2);
+            document.getElementById('dash-saidas').textContent =
+              "R$ " + (data.totais.saida || 0).toFixed(2);
+            const total = (data.totais.entrada || 0) - (data.totais.saida || 0);
+            document.getElementById('dash-total').textContent =
+              "R$ " + total.toFixed(2);
+          }
+        });
 
+      /* TAREFAS DO DIA */
+      fetch('/eventos-json')
+        .then(r => r.json())
+        .then(list => {
+          const hoje = new Date().toISOString().split('T')[0];
+          const tarefasHoje = list.filter(ev =>
+            ev.title &&
+            ev.title.startsWith("Tarefa:") &&
+            ev.start &&
+            ev.start.startsWith(hoje)
+          );
+          document.getElementById('dash-tarefas').textContent = tarefasHoje.length;
+        });
+
+    });
   </script>
 
 </body>
-
 </html>
