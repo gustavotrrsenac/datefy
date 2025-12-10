@@ -515,13 +515,32 @@ def salvar_preferencias():
 
     # Alterar senha se os campos estiverem preenchidos corretamente 
     if senha_atual and nova_senha and nova_senha == confirmar:
-        if check_password(user.senha, senha_atual):
-            user.senha = generate_password(nova_senha)
+        if bcrypt.check_password_hash(user.senha_hash, senha_atual):
+            user.senha_hash = bcrypt.generate_password_hash(nova_senha).decode("utf-8")
 
     user.save()
 
     flash("Preferências e perfil atualizados!", "success")
     return redirect(url_for("perfil"))
+
+@app.route("/alterar-senha-email)", methods=["GET","POST"])
+def alterar_senha_email(): 
+    #receber emailo como query partamms
+    email = request.args.get("email", "").strip()
+    if request.method == "POST":
+        nova_senha = request.form.get("nova_senha")
+
+        try:
+            user = Usuario.get(Usuario.email == email)
+            user.senha_hash = bcrypt.generate_password_hash(nova_senha).decode("utf-8")
+            user.save()
+            flash("Senha alterada com sucesso!", "success")
+            return redirect(url_for("login"))
+        except DoesNotExist:
+            flash("Usuário não encontrado.", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("resetar_senha.html", email=email)
 
 # Correção final da execução Flask com 'port' como inteiro
 if __name__ == '__main__':
