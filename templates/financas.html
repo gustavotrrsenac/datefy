@@ -83,7 +83,16 @@
         </thead>
         <tbody style="color:white;">
           {% for r in registros %}
-            <tr>
+          <tr class="linha-registro"
+          data-id="{{ r['id'] }}"
+          data-descricao="{{ r['descricao'] }}"
+          data-categoria="{{ r['categoria'] }}"
+          data-tipo="{{ r['tipo'] }}"
+          data-valor="{{ '%.2f'|format(r['valor']) }}"
+          data-data="{{ r['data'] }}"
+          data-forma="{{ r['forma_pagamento'] }}"
+          data-parcelas="{{ r['parcelas'] }}">
+      
               <td style="padding:8px 6px;">{{ r['data'] }}</td>
               <td>{{ r['descricao'] }}</td>
               <td>{{ r['categoria'] }}</td>
@@ -118,7 +127,7 @@
       if(data.error) return;
       document.getElementById("total-entradas").innerText = "R$ " + (data.totais.entrada || 0).toFixed(2);
       document.getElementById("total-saidas").innerText = "R$ " + (data.totais.saida || 0).toFixed(2);
-
+  
       const ctx = document.getElementById("chartCategorias").getContext('2d');
       if(window._chartCategorias) window._chartCategorias.destroy();
       window._chartCategorias = new Chart(ctx, {
@@ -132,5 +141,100 @@
     }
     document.addEventListener('DOMContentLoaded', atualizarResumo);
   </script>
+  
+<!--  MODAL DE DETALHES ESTILIZADO -->
+<div id="modal-detalhes" style="
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.55);
+display: none;
+align-items: center;
+justify-content: center;
+z-index: 9999;
+backdrop-filter: blur(3px);
+">
+<div id="modal-box" style="
+  background: #0f2535;
+  padding: 24px;
+  width: 380px;
+  color: #dce7f2;
+  border-radius: 14px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  transform: scale(0.85);
+  opacity: 0;
+  transition: 0.25s ease;
+">
+  <h2 style="margin-top:0;color:#fff;text-align:center;">Detalhes do Registro</h2>
+  <hr style="border:0;border-top:1px solid #355a77;margin:10px 0 18px;">
+
+  <p><strong>Descrição:</strong> <span id="det-descricao"></span></p>
+  <p><strong>Categoria:</strong> <span id="det-categoria"></span></p>
+  <p><strong>Tipo:</strong> <span id="det-tipo"></span></p>
+  <p><strong>Valor:</strong> R$ <span id="det-valor"></span></p>
+  <p><strong>Data:</strong> <span id="det-data"></span></p>
+  <p><strong>Forma de pagamento:</strong> <span id="det-forma"></span></p>
+  <p><strong>Parcelas:</strong> <span id="det-parcelas"></span></p>
+
+  <button onclick="fecharModal()" style="
+    background:#1B3C53;
+    padding:10px 14px;
+    border:none;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    width:100%;
+    margin-top:15px;
+    font-size:15px;
+    transition:0.2s;
+  " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+    Fechar
+  </button>
+</div>
+</div>
+
+<script>
+function abrirModal(linha) {
+document.getElementById("det-descricao").innerText = linha.dataset.descricao;
+document.getElementById("det-categoria").innerText = linha.dataset.categoria;
+document.getElementById("det-tipo").innerText = linha.dataset.tipo;
+document.getElementById("det-valor").innerText = linha.dataset.valor;
+document.getElementById("det-data").innerText = linha.dataset.data;
+document.getElementById("det-forma").innerText = linha.dataset.forma || "—";
+document.getElementById("det-parcelas").innerText = linha.dataset.parcelas || "—";
+
+const modal = document.getElementById("modal-detalhes");
+const box = document.getElementById("modal-box");
+
+modal.style.display = "flex";
+
+setTimeout(() => {
+  box.style.transform = "scale(1)";
+  box.style.opacity = "1";
+}, 10);
+}
+
+function fecharModal() {
+const modal = document.getElementById("modal-detalhes");
+const box = document.getElementById("modal-box");
+
+box.style.transform = "scale(0.85)";
+box.style.opacity = "0";
+
+setTimeout(() => {
+  modal.style.display = "none";
+}, 200);
+}
+
+// fechar clicando fora da caixa
+document.getElementById("modal-detalhes").addEventListener("click", function(e) {
+if (e.target === this) fecharModal();
+});
+
+// ativar clique nas linhas
+document.querySelectorAll(".linha-registro").forEach(linha => {
+linha.style.cursor = "pointer";
+linha.addEventListener("click", () => abrirModal(linha));
+});
+</script>
 </body>
 </html>
