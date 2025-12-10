@@ -154,19 +154,17 @@ body.tela-interna { display:flex; min-height:100vh; }
   .card-box { width:100%; max-width:320px; }
 }
 
-<<<<<<< HEAD
 /* ===== PERFIL ===== */
 .perfil-box {
-  background: #234C6A;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-}
-
-.perfil-header {
-  display: flex;
-  align-items: center;
-  gap: 20px; /* distância entre foto e nome */
+  background-color: #234c6a;
+  color: #dbe9f1;
+  padding: 30px;
+  border-radius: 15px;
+  width: 380px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  text-align: center;
+  margin-top: 50px;
 }
 
 .foto-perfil img {
@@ -205,8 +203,6 @@ body.tela-interna { display:flex; min-height:100vh; }
 
 
 
-=======
->>>>>>> d2238f734503b509d97e8595045b094460aad966
     #calendario {
       background: #0f172a;
       padding: 30px;
@@ -424,7 +420,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-decoration: underline;
 }
 
-<<<<<<< HEAD
 /* CONTAINER */
 .perfil-container {
   background-color: #234C6A;
@@ -436,11 +431,10 @@ body.tela-interna { display:flex; min-height:100vh; }
   color: #DBE9F1;
   text-align: center;
 }
-=======
 /* --------- ÁREA DO PERFIL ---------- */
 
 /* ---- CONTAS BANCARIAS ---- */
-<style>
+
 .contas-list {
   display: flex;
   flex-direction: column;
@@ -475,10 +469,10 @@ body.tela-interna { display:flex; min-height:100vh; }
   background-color: #456882;
   color: white;
 }
-</style>
+
 
 /* ---- PAGINA + IMAGEM + DESCRIÇÃO ---- */
-<style>
+
 /* container principal */
 .perfil-container {
   margin-left: 270px;
@@ -494,12 +488,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
-.perfil-header {
-  display: flex;
-  align-items: center;
-  gap: 20px; /* distância entre foto e nome */
-}
-
 /* título página */
 .titulo-perfil {
   font-size: 2rem;
@@ -509,12 +497,13 @@ body.tela-interna { display:flex; min-height:100vh; }
 }
 
 /* parte do usuário */
-.perfil-usuario img {
-  width: 140px;
-  height: 140px;
+.perfil-usuario {
+  width: 112px;
+  height: 112px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #456882;
+  border: 2px solid #00aeef;
+  overflow: hidden;
+  position: relative;
 }
 
 .perfil-topo {
@@ -523,25 +512,14 @@ body.tela-interna { display:flex; min-height:100vh; }
   object-fit: cover
 }
 
-.perfil-topo img {
+/*.perfil-topo img {
   width: 110px;
   height: 110px;
   border-radius: 50%;
   border: 4px solid #456882;
   object-fit: cover;
   position: relative;
-}
-
-.perfil-topo h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.perfil-topo p {
-  margin: 4px 0 0;
-  color: #d9e6f2;
-}
+}*/
 
 .btn-editar-foto {
   position: absolute;
@@ -642,7 +620,7 @@ body.tela-interna { display:flex; min-height:100vh; }
 .btn-principal:hover {
   background: #5a82a2;
 }
-</style>
+
 
 /* ---- SWITCHES DE NOTIFICAÇÕES ---- */
 .switch-group {
@@ -732,7 +710,6 @@ input:checked + .slider:before {
 
 
 
->>>>>>> d2238f734503b509d97e8595045b094460aad966
 
 /* FOTO ATUAL */
 .foto-perfil-editar img {
