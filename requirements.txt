@@ -1,6 +1,7 @@
-#pip install -r requirements.txt
+# Comando: pip install -r requirements.txt
 Flask
 peewee
 Flask-Bcrypt
-itsdangerous
+itsdangerous 
 python-dotenv
+Flask-Login
