@@ -68,45 +68,6 @@
         {"title":"Pagamento","start":"2025-02-10"},
         {"title":"Reunião","start":"2025-02-15"}
       ]' hidden>
-
-    </section>
-
-    <!-- LEMBRETES -->
-    <section class="painel-info" style="margin-top:18px;">
-      <h3>Lembretes</h3>
-    
-      <table class="tabela-lembretes">
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Descrição</th>
-            <th>Data</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-    
-        <tbody>
-          {% if tarefas %}
-            {% for t in tarefas %}
-              <tr>
-                <td>Tarefa</td>
-                <td>{{ t['titulo'] }}</td>
-                <td>{{ t['data'] }}</td>
-    
-                {% if t['status'] == 1 %}
-                  <td>🟩 Concluída</td>
-                {% else %}
-                  <td>🟨 Pendente</td>
-                {% endif %}
-              </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td colspan="4">Nenhuma tarefa cadastrada ainda.</td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
     </section>
 
     <!-- SUAS TAREFAS RECENTES -->
