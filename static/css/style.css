@@ -111,6 +111,7 @@ main {
   padding:18px;
   border-radius:12px;
   margin-bottom:12px;
+
   box-shadow: 0 6px 18px rgba(31, 31, 31, 0.12);
 }
 
@@ -156,28 +157,35 @@ body.tela-interna { display:flex; min-height:100vh; }
 
 /* ===== PERFIL ===== */
 .perfil-box {
-  background-color: #234c6a;
-  color: #dbe9f1;
-  padding: 30px;
-  border-radius: 15px;
-  width: 380px;
-  margin: auto;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  text-align: center;
-  margin-top: 50px;
+  background: #234C6A;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
-.foto-perfil img {
-  width: 120px;
-  height: 120px;
-  border-radius: 100%;
-  border: 3px solid #00aeef;
-  margin-bottom: 15px;
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* distância entre foto e nome */
 }
 
-.dados-perfil p {
-  font-size: 1rem;
-  margin: 8px 0;
+.perfil-usuario img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #456882;
+}
+
+.perfil-topo h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.perfil-topo p {
+  margin: 4px 0 0;
+  color: #d9e6f2;
 }
 
 .btn-editar {
@@ -337,12 +345,8 @@ body.tela-interna { display:flex; min-height:100vh; }
   color: #1e3a8a; /* azul escuro */
   text-decoration: underline; /* opcional: sublinha o número */
 }}
-.tabela-financas {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-  border: 1px solid #000; /* borda preta */
-}
+
+.tabela-financas { width: 100%; border-collapse: collapse; margin-top: 16px; border: 1px solid #000; /* borda preta */ }
 
 .tabela-financas th, .tabela-financas td {
   border: 1px solid #000; /* linhas pretas */
@@ -420,17 +424,6 @@ body.tela-interna { display:flex; min-height:100vh; }
   text-decoration: underline;
 }
 
-/* CONTAINER */
-.perfil-container {
-  background-color: #234C6A;
-  padding: 40px;
-  width: 500px;
-  margin: 50px auto;
-  border-radius: 18px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-  color: #DBE9F1;
-  text-align: center;
-}
 /* --------- ÁREA DO PERFIL ---------- */
 
 /* ---- CONTAS BANCARIAS ---- */
@@ -488,7 +481,7 @@ body.tela-interna { display:flex; min-height:100vh; }
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
-/* título página */
+* título página */
 .titulo-perfil {
   font-size: 2rem;
   margin-bottom: 30px;
@@ -497,13 +490,11 @@ body.tela-interna { display:flex; min-height:100vh; }
 }
 
 /* parte do usuário */
-.perfil-usuario {
-  width: 112px;
-  height: 112px;
-  border-radius: 50%;
-  border: 2px solid #00aeef;
-  overflow: hidden;
-  position: relative;
+.perfil-usuario img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .perfil-topo {
@@ -838,3 +829,30 @@ textarea {
 
 #eventos-dia { display: none; margin-top:10px; }
 #eventos-dia ul { padding-left: 18px; }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #132d42;
+  padding: 22px;
+  border-radius: 10px;
+  width: 380px;
+  color: white;
+}
+
+.modal-close {
+  float: right;
+  cursor: pointer;
+  font-size: 22px;
+}
