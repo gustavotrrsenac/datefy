@@ -127,7 +127,12 @@
           labels: data.por_categoria.labels,
           datasets: [{ data: data.por_categoria.values, backgroundColor: data.por_categoria.colors }]
         },
-        options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
+        options: { responsive:true, plugins:{ legend:{ labels: {
+                    color: 'white',
+                    font: {
+                        size: 14
+                    }
+                } } } }
       });
     }
     document.addEventListener('DOMContentLoaded', atualizarResumo);
