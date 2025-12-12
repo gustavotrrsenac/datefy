@@ -1,7 +1,8 @@
 import smtplib
 import email.message
+from flask import Flask, request, redirect, render_template, url_for, flash
 
-def enviar_email():
+def enviar_email(email_destino):
     corpo_email = """ "<h2>Redefinição de senha</h2>
 
     <p>Olá,</p>
@@ -24,7 +25,7 @@ def enviar_email():
     msg = email.message.Message()
     msg["Subject"] = "Mensagem titulo"
     msg["From"] = "datefyteste@gmail.com"
-    msg["To"] = "datefyteste@gmail.com"
+    msg["To"] = email_destino
     senha = "frhnsgdomanhxnhx"
     msg.add_header("Content-Type", 'text/html')
     msg.set_payload(corpo_email)
@@ -34,4 +35,3 @@ def enviar_email():
     envia.login(msg["From"],senha)
     envia.sendmail(msg["From"], [msg["To"]],msg.as_string().encode('utf-8'))
     print("Email enviado!")
-enviar_email()

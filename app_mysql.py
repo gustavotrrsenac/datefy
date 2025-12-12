@@ -7,6 +7,8 @@ from playhouse.shortcuts import model_to_dict
 from decimal import Decimal
 from datetime import datetime
 
+from reset_senha_email import enviar_email
+
 # ------------------------------
 
 app = Flask(__name__)
@@ -424,13 +426,6 @@ def financas_data():
 
     return jsonify({"totais": tot_dict, "por_categoria": {"labels": labels, "values": values, "colors": colors}})
 
-@app.route("/recuperar-senha", methods=["GET", "POST"])
-def recuperar_senha():
-    if request.method == "POST":
-        email = request.form.get("email")
-        flash(f"Se {email} estiver cadastrado, enviaremos instruções por e-mail (simulado).", "info")
-        return redirect(url_for("login"))
-    return render_template("recuperar_senha.html")
 
 @app.route("/editar_perfil", methods=["GET", "POST"])
 def editar_perfil():
@@ -487,7 +482,7 @@ def excluir_tarefa(id):
     return redirect(url_for("vida_pessoal"))
 
 # ---------------- TESTE NOTICAÇÕES ----------------
-@app.route("/salvar_preferencias", methods=["POST"])
+@app.route("/salvar_preferencias", methods=["GET","POST"])
 def salvar_preferencias():
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -523,7 +518,7 @@ def salvar_preferencias():
     flash("Preferências e perfil atualizados!", "success")
     return redirect(url_for("perfil"))
 
-@app.route("/alterar-senha-email)", methods=["GET","POST"])
+@app.route("/alterar-senha-email", methods=["GET","POST"])
 def alterar_senha_email(): 
     #receber emailo como query partamms
     email = request.args.get("email", "").strip()
@@ -541,6 +536,28 @@ def alterar_senha_email():
             return redirect(url_for("login"))
 
     return render_template("resetar_senha.html", email=email)
+
+@app.route('/recuperar_senha', methods=['GET', 'POST'])
+def recuperar_senha():
+    teste = 'hgfdhg'
+    if request.method == 'POST':
+        email_destino = request.form.get('email')
+
+        if not email_destino:
+            flash('Digite um e-mail válido.', 'error')
+            return redirect(url_for('recuperar_senha'))
+
+        try:
+            enviar_email(email_destino)
+            flash(f'E-mail de recuperação enviado para {email_destino}', 'success')
+        except Exception as e:
+            print("Erro ao enviar e-mail:", e)
+            flash('Erro ao enviar o e-mail. Verifique o SMTP.', 'error')
+
+        return redirect(url_for('recuperar_senha'))
+
+    return render_template('recuperar_senha.html')
+
 
 # Correção final da execução Flask com 'port' como inteiro
 if __name__ == '__main__':
