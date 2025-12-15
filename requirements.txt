@@ -6,3 +6,4 @@ itsdangerous
 python-dotenv
 Flask-Login
 cryptography
+mysqlclient

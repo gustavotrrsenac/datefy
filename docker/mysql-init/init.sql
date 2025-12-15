@@ -1,0 +1,6 @@
+-- ...existing code...
+CREATE DATABASE IF NOT EXISTS datefy_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'datefy_user'@'%' IDENTIFIED BY 'senac';
+GRANT ALL PRIVILEGES ON datefy_db.* TO 'datefy_user'@'%';
+FLUSH PRIVILEGES;
+-- ...existing code...

@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+
+  datefy_mysql:
+    image: mysql:8.0
+    container_name: datefy_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsenha
+      MYSQL_DATABASE: datefy_db
+      MYSQL_USER: datefy_user
+      MYSQL_PASSWORD: senac
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - proxy
+  datefy_app:
+    build: .
+    container_name: datefy_app
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: datefy_mysql
+      MYSQL_USER: datefy_user
+      MYSQL_PASSWORD: senac
+      MYSQL_DATABASE: datefy_db
+      PORT: 5001
+      SECRET_KEY: "troque_esta_chave"
+    ports:
+      - "5001:5001"
+    depends_on:
+      datefy_mysql:
+        condition: service_healthy
+    networks:
+      - proxy
+
+volumes:
+  db_data:
+
+networks:
+  proxy:
+    external: true

@@ -17,10 +17,11 @@ app.secret_key = os.getenv("SECRET_KEY", "minha_chave_segura")
 bcrypt = Bcrypt(app)
 
 # ---------------- CONFIGURAÇÕES DO MYSQL COM PEEWEE ----------------
-MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
-MYSQL_USER = os.getenv("MYSQL_USER", "root")
+MYSQL_HOST = os.getenv("MYSQL_HOST", "datefy_mysql")
+MYSQL_USER = os.getenv("MYSQL_USER", "datefy_user")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "senac")
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "datefy_db")
+MYSQL_PORT = int(os.getenv("MYSQL_PORT", "3306"))
 
 # Configuração do banco de dados Peewee (MySQL)
 db = MySQLDatabase(
@@ -28,6 +29,9 @@ db = MySQLDatabase(
     user=MYSQL_USER,
     password=MYSQL_PASSWORD,
     host=MYSQL_HOST,
+    port=MYSQL_PORT,
+    ssl=False,
+    connect_timeout=5,
 )
 
 # --- Definição dos Modelos (Mapeamento ORM) ---
@@ -92,10 +96,28 @@ def create_tables():
     with db:
         db.create_tables([Usuario, Tarefa, Financa], safe=True)
 
-try:
-    create_tables()
-except Exception as e:
-    app.logger.warning("Não foi possível criar tabelas automaticamente: %s", e)
+# Aguarda o DB ficar acessível antes de tentar criar as tabelas
+import socket, time
+
+def wait_for_db(host, port, timeout=60):
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            s = socket.create_connection((host, int(port)), 3)
+            s.close()
+            return True
+        except Exception:
+            time.sleep(1)
+    return False
+
+if wait_for_db(MYSQL_HOST, MYSQL_PORT, timeout=60):
+    try:
+        create_tables()
+    except Exception as e:
+        app.logger.warning("Não foi possível criar tabelas automaticamente: %s", e)
+else:
+    app.logger.warning("Banco de dados não alcançável em %s:%s — pulando criação automática de tabelas", MYSQL_HOST, MYSQL_PORT)
+
 
 # --- Categorias ---
 CATEGORIAS = [
@@ -561,5 +583,5 @@ def recuperar_senha():
 
 # Correção final da execução Flask com 'port' como inteiro
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5001))
     app.run(debug=True, host='0.0.0.0', port=port)
